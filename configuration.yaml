@@ -1,0 +1,36 @@
+# Loads default set of integrations. Do not remove.
+default_config: {}
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+lovelace:
+  mode: yaml  # Optional: ensures YAML mode; skip if already set
+  resources:
+    - url: /local/community/energy-gauge-bundle-card/energy-gauge-bundle-card.js
+      type: module
+    - url: /local/community/mini-graph-card/mini-graph-card-bundle.js
+      type: module
+    - url: /local/community/lovelace-card-mod/card-mod.js
+      type: module
+    - url: /local/community/button-card/button-card.js
+      type: module
+    - url: /local/community/lovelace-auto-entities/auto-entities.js
+      type: module
+    - url: /local/community/apexcharts-card/apexcharts-card.js
+      type: module
+    - url: /local/community/mini-media-player/mini-media-player-bundle.js
+      type: module
+    - url: /local/community/simple-weather-card/simple-weather-card-bundle.js
+      type: module
+    - url: /local/community/weather-radar-card/weather-radar-card.js
+      type: module
+    - url: /local/community/light-entity-card/light-entity-card.js
+      type: module
+    - url: /local/community/my-cards/my-cards.js
+      type: module

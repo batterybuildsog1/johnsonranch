@@ -1,0 +1,77 @@
+button_card_templates: !include_dir_merge_named custom_components/ui_lovelace_minimalist/__ui_minimalist__/ulm_templates/
+
+title: "UI Lovelace Minimalist"
+theme: "minimalist-desktop"
+background: "var(--background-image)"
+
+views:
+  - title: "Home"
+    path: "home"
+    icon: "mdi:home"
+    cards:
+      # Welcome Card
+      - type: "custom:button-card"
+        template: "card_title"
+        name: "Johnson Ranch Home"
+        label: "Minimalist Dashboard"
+
+      # Weather Card (Johnson Ranch)
+      - type: "custom:auto-entities"
+        card:
+          type: "grid"
+          columns: 1
+          square: false
+        card_param: "cards"
+        filter:
+          include:
+            - domain: "weather"
+              options:
+                type: "custom:button-card"
+                template: "card_welcome_scenes"
+                variables:
+                  ulm_weather: "{{ entity.entity_id }}"
+
+      # Luxpower LXP Sensors
+      - type: "custom:button-card"
+        template: "card_title"
+        name: "Luxpower LXP"
+        label: "Power and Battery Metrics"
+      - type: "custom:auto-entities"
+        card:
+          type: "grid"
+          columns: 2
+          square: false
+        card_param: "cards"
+        filter:
+          include:
+            - entity_id: sensor.luxpower_lxp_*
+              options:
+                type: "custom:button-card"
+                template: "card_generic"
+            - entity_id: sensor.battery_state_of_charge
+              options:
+                type: "custom:button-card"
+                template: "card_battery"
+                variables:
+                  ulm_card_battery_battery_level_danger: 20
+                  ulm_card_battery_battery_level_warning: 60
+
+      # Climate Control (Main Room)
+      - type: "custom:button-card"
+        template: "card_title"
+        name: "Main Room Climate"
+        label: "Temperature and Controls"
+      - type: "custom:auto-entities"
+        card:
+          type: "grid"
+          columns: 1
+          square: false
+        card_param: "cards"
+        filter:
+          include:
+            - domain: climate
+              options:
+                type: "custom:button-card"
+                template: "card_generic"
+
+
