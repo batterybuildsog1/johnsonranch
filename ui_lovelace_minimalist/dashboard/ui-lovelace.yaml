@@ -1,4 +1,4 @@
-button_card_templates: !include_dir_merge_named "../../custom_components/ui_lovelace_minimalist/**ui_minimalist**/ulm_templates/"
+button_card_templates: !include_dir_merge_named "../../custom_components/ui_lovelace_minimalist/lovelace/ulm_templates/"
 title: "Luxpower Solar Dashboard"
 theme: "minimalist-desktop"
 background: "var(--background-image)"
