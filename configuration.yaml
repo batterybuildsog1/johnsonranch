@@ -11,6 +11,13 @@ scene: !include scenes.yaml
 
 lovelace:
   mode: yaml  # Optional: ensures YAML mode; skip if already set
+  dashboards:
+    solar-assistant:
+      mode: yaml
+      title: Solar Assistant
+      icon: mdi:solar-power
+      show_in_sidebar: true
+      filename: ui_lovelace_minimalist/dashboard/solar-assistant.yaml
   resources:
     - url: /local/community/energy-gauge-bundle-card/energy-gauge-bundle-card.js
       type: module
