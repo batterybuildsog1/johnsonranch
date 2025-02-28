@@ -41,3 +41,30 @@ lovelace:
       type: module
     - url: /local/community/my-cards/my-cards.js
       type: module
+    - url: /local/community/vertical-stack-in-card/vertical-stack-in-card.js
+      type: module
+    - url: /local/community/battery-state-card/battery-state-card.js
+      type: module
+
+udp:
+  port: 50222
+  local_ip: 192.168.1.100  # Your HA instance IP
+  
+sensor:
+  - platform: template
+    sensors:
+      windy_lat:
+        friendly_name: "Fixed Weather Latitude"
+        value: "38.3368"  # From 38°20'12.5"N
+        icon: mdi:latitude
+      windy_lon:
+        friendly_name: "Fixed Weather Longitude" 
+        value: "-114.1268"  # From 114°07'36.4"W
+        icon: mdi:longitude
+
+panel_iframe:
+  windy:
+    title: "Windy"
+    icon: mdi:weather-windy
+    url: "https://www.windy.com"
+

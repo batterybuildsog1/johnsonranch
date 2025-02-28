@@ -1,0 +1,16 @@
+# Energy Dashboard Configuration
+energy:
+  # Solar panel configuration
+  solar_sources:
+    - entity_id: sensor.luxpower_lxp_pv_energy
+      config_entry_solar_type: production
+
+  # Home consumption
+  device_consumption:
+    - entity_id: sensor.luxpower_lxp_load_energy
+
+  # Battery configuration
+  battery:
+    - entity_id: sensor.luxpower_lxp_battery_state_of_charge
+      charged_source: sensor.luxpower_lxp_battery_energy_in
+      discharged_source: sensor.luxpower_lxp_battery_energy_out

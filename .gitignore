@@ -1,0 +1,45 @@
+.oh-my-zsh/
+
+# Home Assistant specific
+.storage/
+.cloud/
+.google.token
+.uuid
+.HA_VERSION
+home-assistant_v2.db*
+home-assistant.log*
+*.db-shm
+*.db-wal
+custom_components/hacs
+
+
+# System files
+.DS_Store
+Thumbs.db
+__pycache__/
+*.py[cod]
+*.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Editor directories and files
+.idea
+.vscode
+*.swp
+*.swo
+

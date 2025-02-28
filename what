@@ -1,0 +1,17 @@
+[33mcommit 1d948da19570cf8b0de75e77e533fc1cfdc2fefc[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: root <root@a0d7b954-ssh.local.hass.io>
+Date:   Wed Feb 26 13:05:34 2025 -0700
+
+    Remove unneeded __pycache__ and .gz files for troubleshooting
+
+[33mcommit 985c3cb2fe0af7ba1fcd776cec0e143ea9269af1[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: root <root@a0d7b954-ssh.local.hass.io>
+Date:   Wed Feb 26 12:51:50 2025 -0700
+
+    Removed previously tracked ignored files
+
+[33mcommit c66c187fed21a9e3d71fafefa83c039a7f4826ba[m
+Author: root <root@a0d7b954-ssh.local.hass.io>
+Date:   Wed Feb 26 11:19:15 2025 -0700
+
+    Added Home Assistant configuration files

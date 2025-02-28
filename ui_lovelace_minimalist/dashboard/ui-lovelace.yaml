@@ -1,180 +1,614 @@
+<<<<<<< Updated upstream
 button_card_templates: !include_dir_merge_named "../../custom_components/ui_lovelace_minimalist/lovelace/ulm_templates/"
+title: "Solar Assistant"
+=======
+button_card_templates: !include_dir_merge_named "../../custom_components/ui_lovelace_minimalist/**ui_minimalist**/ulm_templates/"
 title: "Luxpower Solar Dashboard"
+>>>>>>> Stashed changes
 theme: "minimalist-desktop"
 background: "var(--background-image)"
 views:
-  - title: "Home"
-    path: "home"
-    icon: "mdi:home"
+  #######################################################
+  # DASHBOARD VIEW
+  #######################################################
+  - title: "Dashboard"
+    path: "dashboard"
+    icon: "mdi:view-dashboard"
     cards:
-      #######################################################
-      # MAIN ENERGY FLOW VISUALIZATION
-      #######################################################
+      # Header with navigation tabs
+      - type: horizontal-stack
+        cards:
+          - type: "custom:button-card"
+            template: "card_generic"
+            name: "Dashboard"
+            icon: "mdi:view-dashboard"
+            tap_action:
+              action: navigate
+              navigation_path: "/ui-lovelace-minimalist/solar-assistant/dashboard"
+            styles:
+              card:
+                - background-color: "rgba(var(--color-theme),0.7)"
+                - border-radius: "15px"
+              name:
+                - font-weight: "bold"
+          - type: "custom:button-card"
+            template: "card_generic"
+            name: "Charts"
+            icon: "mdi:chart-line"
+            tap_action:
+              action: navigate
+              navigation_path: "/ui-lovelace-minimalist/solar-assistant/charts"
+            styles:
+              card:
+                - background-color: "rgba(var(--color-background),0.7)"
+                - border-radius: "15px"
+          - type: "custom:button-card"
+            template: "card_generic"
+            name: "Totals"
+            icon: "mdi:sigma"
+            tap_action:
+              action: navigate
+              navigation_path: "/ui-lovelace-minimalist/solar-assistant/totals"
+            styles:
+              card:
+                - background-color: "rgba(var(--color-background),0.7)"
+                - border-radius: "15px"
+          - type: "custom:button-card"
+            template: "card_generic"
+            name: "Power"
+            icon: "mdi:flash"
+            tap_action:
+              action: navigate
+              navigation_path: "/ui-lovelace-minimalist/solar-assistant/power"
+            styles:
+              card:
+                - background-color: "rgba(var(--color-background),0.7)"
+                - border-radius: "15px"
+          - type: "custom:button-card"
+            template: "card_generic"
+            name: "Configuration"
+            icon: "mdi:cog"
+            tap_action:
+              action: navigate
+              navigation_path: "/ui-lovelace-minimalist/solar-assistant/configuration"
+            styles:
+              card:
+                - background-color: "rgba(var(--color-background),0.7)"
+                - border-radius: "15px"
 
-      # Card-mod styled card to create a visual power flow
-      - type: picture-elements
-        image: /local/images/energy_background.png  # Create a simple transparent PNG
-        card_mod:
-          style: |
-            ha-card {
-              background: rgba(0,0,0,0.2);
-              border-radius: 15px;
-              padding: 15px;
-              height: 250px;
-            }
-        elements:
-          # Solar Panel Icon and Value
-          - type: icon
-            icon: mdi:solar-panel
-            style:
-              top: 15%
-              left: 25%
-              color: '#FFD700'
-              '--mdc-icon-size': 40px
-          - type: state-label
-            entity: sensor.luxpower_lxp_pv_power
-            style:
-              top: 30%
-              left: 25%
-              color: white
-              font-size: 18px
-              font-weight: bold
-          
-          # Home Icon and Value
-          - type: icon
-            icon: mdi:home
-            style:
-              top: 15%
-              left: 75%
-              color: '#4682B4'
-              '--mdc-icon-size': 40px
-          - type: state-label
-            entity: sensor.luxpower_lxp_load_power
-            style:
-              top: 30%
-              left: 75%
-              color: white
-              font-size: 18px
-              font-weight: bold
-          
-          # Battery Icon and Value
-          - type: icon
-            icon: mdi:battery
-            style:
-              top: 70%
-              left: 50%
-              color: '#50C878'
-              '--mdc-icon-size': 40px
-          - type: state-label
-            entity: sensor.luxpower_lxp_battery_power
-            style:
-              top: 85%
-              left: 50%
-              color: white
-              font-size: 18px
-              font-weight: bold
-          
-          # Battery Percentage
-          - type: state-label
-            entity: sensor.luxpower_lxp_battery_state_of_charge
-            suffix: "%"
-            style:
-              top: 95%
-              left: 50%
-              color: white
-              font-size: 16px
-              
-          # Flow arrows
-          - type: custom:state-icon
-            entity: sensor.luxpower_lxp_pv_power
-            icon: mdi:arrow-right
-            style:
-              top: 15%
-              left: 50%
-              transform: rotate(0deg)
-              color: '#FFD700'
-              '--mdc-icon-size': 30px
-              opacity: |
-                [[[  
-                  return states['sensor.luxpower_lxp_pv_power'].state > 0 ? '1' : '0';
-                ]]]
-                
-          - type: custom:state-icon
-            entity: sensor.luxpower_lxp_battery_power
-            icon: mdi:arrow-up
-            style:
-              top: 50%
-              left: 50%
-              transform: |
-                [[[  
-                  return states['sensor.luxpower_lxp_battery_power'].state < 0 ? 'rotate(0deg)' : 'rotate(180deg)';
-                ]]]
-              color: '#50C878'
-              '--mdc-icon-size': 30px
-              
-      #######################################################
-      # BATTERY STATUS CARD
-      #######################################################
-      
-      # Energy Gauge Bundle Card for Battery
-      - type: custom:energy-gauge-bundle-card
-        entity: sensor.luxpower_lxp_battery_state_of_charge
-        name: Battery Storage
-        unit: "%"
-        min: 0
-        max: 100
-        severity:
-          green: 50
-          yellow: 20
-          red: 0
-        complementary:
-          - entity: sensor.luxpower_lxp_battery_power
-            name: Current Power
-            unit: "W"
-            icon: mdi:flash
-          - entity: sensor.luxpower_lxp_pv_energy
-            name: Today's Solar
-            unit: "kWh"
-            icon: mdi:solar-power
-            
-      #######################################################
-      # POWER FLOW CHART
-      #######################################################
-      
-      # ApexCharts Card for Power Flow Comparison
-      - type: custom:apexcharts-card
-        header:
-          show: true
-          title: Power Flow
-          show_states: true
-        graph_span: 6h
-        span:
-          start: hour
-        apex_config:
-          chart:
+      # Main content area
+      - type: vertical-stack
+        cards:
+          # Status Cards Section
+          - type: horizontal-stack
+            cards:
+              # Inverter Status Card
+              - type: custom:button-card
+                template: card_generic
+                entity: sensor.luxpower_lxp_inverter_status
+                name: Inverter
+                label: Battery mode
+                icon: mdi:solar-power-variant
+                styles:
+                  card:
+                    - border-radius: "15px"
+                    - padding: "15px"
+                    - background-color: "rgba(var(--color-background),0.7)"
+                  grid:
+                    - grid-template-areas: "'i n' 'i l'"
+                    - grid-template-columns: "40px auto"
+                    - grid-template-rows: "min-content min-content"
+                  icon:
+                    - color: "rgba(var(--color-blue),1)"
+                  name:
+                    - font-weight: "bold"
+                    - font-size: "16px"
+                  label:
+                    - color: "rgba(var(--color-text),0.7)"
+
+              # Solar PV Status Card
+              - type: custom:button-card
+                template: card_generic
+                entity: sensor.luxpower_lxp_pv_power
+                name: Solar PV
+                label: |
+                  D: {{ states('sensor.luxpower_lxp_pv_energy_today') }} kWh
+                  W: {{ states('sensor.luxpower_lxp_pv_energy_week') }} kWh
+                icon: mdi:weather-sunny
+                styles:
+                  card:
+                    - border-radius: "15px"
+                    - padding: "15px"
+                    - background-color: "rgba(var(--color-background),0.7)"
+                  grid:
+                    - grid-template-areas: "'i n' 'i l'"
+                    - grid-template-columns: "40px auto"
+                    - grid-template-rows: "min-content min-content"
+                  icon:
+                    - color: "rgba(var(--color-yellow),1)"
+                  name:
+                    - font-weight: "bold"
+                    - font-size: "16px"
+                  label:
+                    - color: "rgba(var(--color-text),0.7)"
+                    - white-space: "pre-line"
+
+          - type: horizontal-stack
+            cards:
+              # Grid Status Card
+              - type: custom:button-card
+                template: card_generic
+                entity: sensor.luxpower_lxp_grid_voltage
+                name: Grid
+                icon: mdi:transmission-tower
+                styles:
+                  card:
+                    - border-radius: "15px"
+                    - padding: "15px"
+                    - background-color: "rgba(var(--color-background),0.7)"
+                  grid:
+                    - grid-template-areas: "'i n' 'i s'"
+                    - grid-template-columns: "40px auto"
+                    - grid-template-rows: "min-content min-content"
+                  icon:
+                    - color: "rgba(var(--color-red),1)"
+                  name:
+                    - font-weight: "bold"
+                    - font-size: "16px"
+
+              # Battery Status Card
+              - type: custom:button-card
+                template: card_generic
+                entity: sensor.battery_state_of_charge
+                name: Battery
+                label: |
+                  {{ states('sensor.battery_state_of_charge') }}%
+                  {{ states('sensor.battery_charge_rate') }}%/hr
+                icon: mdi:battery
+                styles:
+                  card:
+                    - border-radius: "15px"
+                    - padding: "15px"
+                    - background-color: "rgba(var(--color-background),0.7)"
+                  grid:
+                    - grid-template-areas: "'i n' 'i l'"
+                    - grid-template-columns: "40px auto"
+                    - grid-template-rows: "min-content min-content"
+                  icon:
+                    - color: "rgba(var(--color-green),1)"
+                  name:
+                    - font-weight: "bold"
+                    - font-size: "16px"
+                  label:
+                    - color: "rgba(var(--color-text),0.7)"
+                    - white-space: "pre-line"
+
+          # Gauge Cards Section
+          - type: horizontal-stack
+            cards:
+              # Load Power Gauge
+              - type: custom:apexcharts-card
+                header:
+                  show: true
+                  title: Load
+                  show_states: true
+                  colorize_states: true
+                series:
+                  - entity: sensor.luxpower_lxp_load_power
+                    name: Load
+                    color: blue
+                chart_type: radialBar
+                apex_config:
+                  chart:
+                    height: 200
+                  plotOptions:
+                    radialBar:
+                      hollow:
+                        size: '70%'
+                      dataLabels:
+                        showOn: always
+                        name:
+                          show: true
+                          fontSize: '16px'
+                          fontWeight: 600
+                          offsetY: -10
+                        value:
+                          show: true
+                          fontSize: '22px'
+                          fontWeight: 400
+                          formatter: function(val) { return val + ' W'; }
+                      track:
+                        background: '#2c3e50'
+
+              # Solar PV Power Gauge
+              - type: custom:apexcharts-card
+                header:
+                  show: true
+                  title: Solar PV
+                  show_states: true
+                  colorize_states: true
+                series:
+                  - entity: sensor.luxpower_lxp_pv_power
+                    name: Solar PV
+                    color: yellow
+                chart_type: radialBar
+                apex_config:
+                  chart:
+                    height: 200
+                  plotOptions:
+                    radialBar:
+                      hollow:
+                        size: '70%'
+                      dataLabels:
+                        showOn: always
+                        name:
+                          show: true
+                          fontSize: '16px'
+                          fontWeight: 600
+                          offsetY: -10
+                        value:
+                          show: true
+                          fontSize: '22px'
+                          fontWeight: 400
+                          formatter: function(val) { return val + ' W'; }
+                      track:
+                        background: '#2c3e50'
+
+          - type: horizontal-stack
+            cards:
+              # Grid Power Gauge
+              - type: custom:apexcharts-card
+                header:
+                  show: true
+                  title: Grid
+                  show_states: true
+                  colorize_states: true
+                series:
+                  - entity: sensor.luxpower_lxp_grid_power
+                    name: Grid
+                    color: red
+                chart_type: radialBar
+                apex_config:
+                  chart:
+                    height: 200
+                  plotOptions:
+                    radialBar:
+                      hollow:
+                        size: '70%'
+                      dataLabels:
+                        showOn: always
+                        name:
+                          show: true
+                          fontSize: '16px'
+                          fontWeight: 600
+                          offsetY: -10
+                        value:
+                          show: true
+                          fontSize: '22px'
+                          fontWeight: 400
+                          formatter: function(val) { return val + ' W'; }
+                      track:
+                        background: '#2c3e50'
+
+              # Battery Power Gauge
+              - type: custom:apexcharts-card
+                header:
+                  show: true
+                  title: Battery
+                  show_states: true
+                  colorize_states: true
+                series:
+                  - entity: sensor.luxpower_lxp_battery_power
+                    name: Battery
+                    color: green
+                chart_type: radialBar
+                apex_config:
+                  chart:
+                    height: 200
+                  plotOptions:
+                    radialBar:
+                      hollow:
+                        size: '70%'
+                      dataLabels:
+                        showOn: always
+                        name:
+                          show: true
+                          fontSize: '16px'
+                          fontWeight: 600
+                          offsetY: -10
+                        value:
+                          show: true
+                          fontSize: '22px'
+                          fontWeight: 400
+                          formatter: function(val) { return val + ' W'; }
+                      track:
+                        background: '#2c3e50'
+
+          # Power Flow Graph
+          - type: custom:mini-graph-card
+            name: Overview
             height: 250
-          yaxis:
-            title:
-              text: 'Watts'
-        series:
-          - entity: sensor.luxpower_lxp_pv_power
-            name: Solar Generation
-            stroke_width: 2
-            color: '#FFD700'
-            group_by:
-              func: avg
-              duration: 5m
-          - entity: sensor.luxpower_lxp_load_power
-            name: Home Consumption
-            stroke_width: 2
-            color: '#FF6347'
-            group_by:
-              func: avg
-              duration: 5m
-          - entity: sensor.luxpower_lxp_battery_power
-            name: Battery Power
-            stroke_width: 2
-            color: '#4682B4'
-            group_by:
-              func: avg
-              duration: 5m
+            hours_to_show: 24
+            points_per_hour: 4
+            line_width: 2
+            font_size: 14
+            animate: true
+            show:
+              labels: true
+              points: false
+              legend: true
+              fill: true
+            entities:
+              - entity: sensor.luxpower_lxp_load_power
+                name: Load power
+                color: blue
+              - entity: sensor.luxpower_lxp_grid_power
+                name: Grid power
+                color: red
+              - entity: sensor.luxpower_lxp_pv_power
+                name: PV power
+                color: yellow
+              - entity: sensor.luxpower_lxp_battery_power
+                name: Battery power
+                color: green
+
+  #######################################################
+  # CHARTS VIEW
+  #######################################################
+  - title: "Charts"
+    path: "charts"
+    icon: "mdi:chart-line"
+    cards:
+      # Header with navigation tabs (same as Dashboard view)
+      - type: horizontal-stack
+        cards:
+          - type: "custom:button-card"
+            template: "card_generic"
+            name: "Dashboard"
+            icon: "mdi:view-dashboard"
+            tap_action:
+              action: navigate
+              navigation_path: "/ui-lovelace-minimalist/solar-assistant/dashboard"
+            styles:
+              card:
+                - background-color: "rgba(var(--color-background),0.7)"
+                - border-radius: "15px"
+          - type: "custom:button-card"
+            template: "card_generic"
+            name: "Charts"
+            icon: "mdi:chart-line"
+            tap_action:
+              action: navigate
+              navigation_path: "/ui-lovelace-minimalist/solar-assistant/charts"
+            styles:
+              card:
+                - background-color: "rgba(var(--color-theme),0.7)"
+                - border-radius: "15px"
+              name:
+                - font-weight: "bold"
+          - type: "custom:button-card"
+            template: "card_generic"
+            name: "Totals"
+            icon: "mdi:sigma"
+            tap_action:
+              action: navigate
+              navigation_path: "/ui-lovelace-minimalist/solar-assistant/totals"
+            styles:
+              card:
+                - background-color: "rgba(var(--color-background),0.7)"
+                - border-radius: "15px"
+          - type: "custom:button-card"
+            template: "card_generic"
+            name: "Power"
+            icon: "mdi:flash"
+            tap_action:
+              action: navigate
+              navigation_path: "/ui-lovelace-minimalist/solar-assistant/power"
+            styles:
+              card:
+                - background-color: "rgba(var(--color-background),0.7)"
+                - border-radius: "15px"
+          - type: "custom:button-card"
+            template: "card_generic"
+            name: "Configuration"
+            icon: "mdi:cog"
+            tap_action:
+              action: navigate
+              navigation_path: "/ui-lovelace-minimalist/solar-assistant/configuration"
+            styles:
+              card:
+                - background-color: "rgba(var(--color-background),0.7)"
+                - border-radius: "15px"
+
+      # Charts content will go here
+      - type: markdown
+        content: |
+          ## Detailed Power Charts
+          This section will contain detailed charts for analyzing power production, consumption, and storage patterns.
+
+  #######################################################
+  # TOTALS VIEW
+  #######################################################
+  - title: "Totals"
+    path: "totals"
+    icon: "mdi:sigma"
+    cards:
+      # Header with navigation tabs (same as other views)
+      - type: horizontal-stack
+        cards:
+          - type: "custom:button-card"
+            template: "card_generic"
+            name: "Dashboard"
+            icon: "mdi:view-dashboard"
+            tap_action:
+              action: navigate
+              navigation_path: "/ui-lovelace-minimalist/solar-assistant/dashboard"
+            styles:
+              card:
+                - background-color: "rgba(var(--color-background),0.7)"
+                - border-radius: "15px"
+          - type: "custom:button-card"
+            template: "card_generic"
+            name: "Charts"
+            icon: "mdi:chart-line"
+            tap_action:
+              action: navigate
+              navigation_path: "/ui-lovelace-minimalist/solar-assistant/charts"
+            styles:
+              card:
+                - background-color: "rgba(var(--color-background),0.7)"
+                - border-radius: "15px"
+
+      # Totals content will go here
+      - type: markdown
+        content: |
+          ## Energy Totals
+          This section will display cumulative energy production, consumption, and grid interaction metrics.
+
+  #######################################################
+  # POWER VIEW
+  #######################################################
+  - title: "Power"
+    path: "power"
+    icon: "mdi:flash"
+    cards:
+      # Header with navigation tabs (same as other views)
+      - type: horizontal-stack
+        cards:
+          - type: "custom:button-card"
+            template: "card_generic"
+            name: "Dashboard"
+            icon: "mdi:view-dashboard"
+            tap_action:
+              action: navigate
+              navigation_path: "/ui-lovelace-minimalist/solar-assistant/dashboard"
+            styles:
+              card:
+                - background-color: "rgba(var(--color-background),0.7)"
+                - border-radius: "15px"
+          - type: "custom:button-card"
+            template: "card_generic"
+            name: "Charts"
+            icon: "mdi:chart-line"
+            tap_action:
+              action: navigate
+              navigation_path: "/ui-lovelace-minimalist/solar-assistant/charts"
+            styles:
+              card:
+                - background-color: "rgba(var(--color-background),0.7)"
+                - border-radius: "15px"
+          - type: "custom:button-card"
+            template: "card_generic"
+            name: "Totals"
+            icon: "mdi:sigma"
+            tap_action:
+              action: navigate
+              navigation_path: "/ui-lovelace-minimalist/solar-assistant/totals"
+            styles:
+              card:
+                - background-color: "rgba(var(--color-background),0.7)"
+                - border-radius: "15px"
+          - type: "custom:button-card"
+            template: "card_generic"
+            name: "Power"
+            icon: "mdi:flash"
+            tap_action:
+              action: navigate
+              navigation_path: "/ui-lovelace-minimalist/solar-assistant/power"
+            styles:
+              card:
+                - background-color: "rgba(var(--color-theme),0.7)"
+                - border-radius: "15px"
+              name:
+                - font-weight: "bold"
+          - type: "custom:button-card"
+            template: "card_generic"
+            name: "Configuration"
+            icon: "mdi:cog"
+            tap_action:
+              action: navigate
+              navigation_path: "/ui-lovelace-minimalist/solar-assistant/configuration"
+            styles:
+              card:
+                - background-color: "rgba(var(--color-background),0.7)"
+                - border-radius: "15px"
+
+      # Power content will go here
+      - type: markdown
+        content: |
+          ## Power Flow Analysis
+          This section will provide detailed power flow analysis and real-time metrics.
+
+  #######################################################
+  # CONFIGURATION VIEW
+  #######################################################
+  - title: "Configuration"
+    path: "configuration"
+    icon: "mdi:cog"
+    cards:
+      # Header with navigation tabs (same as other views)
+      - type: horizontal-stack
+        cards:
+          - type: "custom:button-card"
+            template: "card_generic"
+            name: "Dashboard"
+            icon: "mdi:view-dashboard"
+            tap_action:
+              action: navigate
+              navigation_path: "/ui-lovelace-minimalist/solar-assistant/dashboard"
+            styles:
+              card:
+                - background-color: "rgba(var(--color-background),0.7)"
+                - border-radius: "15px"
+          - type: "custom:button-card"
+            template: "card_generic"
+            name: "Charts"
+            icon: "mdi:chart-line"
+            tap_action:
+              action: navigate
+              navigation_path: "/ui-lovelace-minimalist/solar-assistant/charts"
+            styles:
+              card:
+                - background-color: "rgba(var(--color-background),0.7)"
+                - border-radius: "15px"
+          - type: "custom:button-card"
+            template: "card_generic"
+            name: "Totals"
+            icon: "mdi:sigma"
+            tap_action:
+              action: navigate
+              navigation_path: "/ui-lovelace-minimalist/solar-assistant/totals"
+            styles:
+              card:
+                - background-color: "rgba(var(--color-background),0.7)"
+                - border-radius: "15px"
+          - type: "custom:button-card"
+            template: "card_generic"
+            name: "Power"
+            icon: "mdi:flash"
+            tap_action:
+              action: navigate
+              navigation_path: "/ui-lovelace-minimalist/solar-assistant/power"
+            styles:
+              card:
+                - background-color: "rgba(var(--color-background),0.7)"
+                - border-radius: "15px"
+          - type: "custom:button-card"
+            template: "card_generic"
+            name: "Configuration"
+            icon: "mdi:cog"
+            tap_action:
+              action: navigate
+              navigation_path: "/ui-lovelace-minimalist/solar-assistant/configuration"
+            styles:
+              card:
+                - background-color: "rgba(var(--color-theme),0.7)"
+                - border-radius: "15px"
+              name:
+                - font-weight: "bold"
+
+      # Configuration content will go here
+      - type: markdown
+        content: |
+          ## System Configuration
+          This section will contain system configuration options and settings.
