@@ -150,7 +150,7 @@ views:
             type: area
             stroke_width: 2
             color: '#FFD700'
-            fill_opacity: 0.3
+            opacity: 0.3
             group_by:
               func: avg
               duration: 10m
