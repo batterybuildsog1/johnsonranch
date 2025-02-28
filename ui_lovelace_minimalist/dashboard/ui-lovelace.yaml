@@ -8,307 +8,7 @@ views:
     icon: "mdi:home"
     cards:
       #######################################################
-      # GAUGE CARD EXAMPLES
-      #######################################################
-
-      # Simple Gauge Card for Battery SOC
-      - type: gauge
-        entity: sensor.luxpower_lxp_battery_state_of_charge
-        name: Battery State of Charge
-        min: 0
-        max: 100
-        severity:
-          green: 50
-          yellow: 20
-          red: 0
-
-      # Energy Gauge Bundle Card Example (custom card)
-      - type: custom:energy-gauge-bundle-card
-        entity: sensor.luxpower_lxp_battery_state_of_charge
-        name: Battery Storage
-        unit: "%"
-        min: 0
-        max: 100
-        severity:
-          green: 50
-          yellow: 20
-          red: 0
-        complementary:
-          - entity: sensor.luxpower_lxp_battery_power
-            name: Current Power
-            unit: "W"
-            icon: mdi:flash
-          - entity: sensor.luxpower_lxp_pv_energy
-            name: Today's Solar
-            unit: "kWh"
-            icon: mdi:solar-power
-
-      #######################################################
-      # BUTTON CARD EXAMPLES
-      #######################################################
-
-      # Simple Button Card for PV Power
-      - type: custom:button-card
-        entity: sensor.luxpower_lxp_pv_power
-        name: Solar Power
-        icon: mdi:solar-panel
-        show_state: true
-        styles:
-          card:
-            - height: 100px
-            - border-radius: 10px
-          icon:
-            - color: 'var(--yellow-color)'
-            - width: 40px
-            - height: 40px
-          name:
-            - font-size: 14px
-            - color: 'var(--primary-text-color)'
-          state:
-            - font-size: 20px
-            - color: 'var(--primary-text-color)'
-        state:
-          - value: 0
-            color: var(--disabled-text-color)
-            icon: mdi:weather-night
-          - operator: '>'
-            value: 0
-            color: var(--yellow-color)
-            icon: mdi:solar-panel
-
-      # Advanced Button Card with Battery Info and Visual Elements
-      - type: custom:button-card
-        entity: sensor.luxpower_lxp_battery_state_of_charge
-        name: Battery
-        icon: mdi:battery
-        styles:
-          card:
-            - height: 130px
-            - border-radius: 15px
-            - padding: 10px
-          grid:
-            - grid-template-areas: '"i n" "i s" "i b"'
-            - grid-template-columns: 40% 60%
-            - grid-template-rows: 33% 33% 33%
-          icon:
-            - width: 40px
-            - height: 40px
-          name:
-            - font-size: 16px
-            - font-weight: bold
-            - justify-self: start
-          state:
-            - font-size: 22px
-            - justify-self: start
-            - font-weight: bold
-          custom_fields:
-            battery_power:
-              - font-size: 14px
-              - justify-self: start
-              - align-self: start
-        custom_fields:
-          battery_power: >
-            [[[ return `${states['sensor.luxpower_lxp_battery_power'].state} W` ]]]
-        state:
-          - value: 20
-            operator: '<'
-            color: var(--error-color)
-            icon: mdi:battery-10
-          - value: 50
-            operator: '<'
-            color: var(--warning-color)
-            icon: mdi:battery-30
-          - value: 80
-            operator: '<'
-            color: var(--success-color)
-            icon: mdi:battery-60
-          - value: 100
-            operator: '<='
-            color: var(--success-color)
-            icon: mdi:battery-90
-
-      #######################################################
-      # APEXCHARTS CARD EXAMPLES
-      #######################################################
-
-      # ApexCharts Card for Daily Solar Production
-      - type: custom:apexcharts-card
-        header:
-          show: true
-          title: Daily Solar Production
-          show_states: true
-          colorize_states: true
-        graph_span: 24h
-        span:
-          start: day
-        apex_config:
-          chart:
-            height: 200
-        series:
-          - entity: sensor.luxpower_lxp_pv_power
-            name: Solar Output
-            type: area
-            stroke_width: 2
-            color: '#FFD700'
-            opacity: 0.3
-            group_by:
-              func: avg
-              duration: 10m
-
-      # ApexCharts Card for Power Flow Comparison
-      - type: custom:apexcharts-card
-        header:
-          show: true
-          title: Power Flow
-          show_states: true
-        graph_span: 6h
-        span:
-          start: hour
-        apex_config:
-          chart:
-            height: 250
-          yaxis:
-            title:
-              text: 'Watts'
-        series:
-          - entity: sensor.luxpower_lxp_pv_power
-            name: Solar Generation
-            stroke_width: 2
-            color: '#FFD700'
-            group_by:
-              func: avg
-              duration: 5m
-          - entity: sensor.luxpower_lxp_load_power
-            name: Home Consumption
-            stroke_width: 2
-            color: '#FF6347'
-            group_by:
-              func: avg
-              duration: 5m
-          - entity: sensor.luxpower_lxp_battery_power
-            name: Battery Power
-            stroke_width: 2
-            color: '#4682B4'
-            group_by:
-              func: avg
-              duration: 5m
-
-      #######################################################
-      # ENTITY CARD EXAMPLES
-      #######################################################
-
-      # Simple entities card with multiple data points
-      - type: entities
-        title: Luxpower LXP Status
-        icon: mdi:solar-power
-        show_header_toggle: false
-        state_color: true
-        entities:
-          - entity: sensor.luxpower_lxp_pv_power
-            name: Solar Generation
-            icon: mdi:solar-panel
-            secondary_info: last-changed
-          - entity: sensor.luxpower_lxp_load_power
-            name: Home Consumption
-            icon: mdi:home-lightning-bolt
-            secondary_info: last-changed
-          - entity: sensor.luxpower_lxp_battery_power
-            name: Battery Power
-            icon: mdi:battery-charging
-            secondary_info: last-changed
-          - entity: sensor.luxpower_lxp_battery_state_of_charge
-            name: Battery State
-            icon: mdi:battery-charging-100
-            secondary_info: last-changed
-          - entity: sensor.luxpower_lxp_pv_energy
-            name: Today's Solar Production
-            icon: mdi:solar-power
-            secondary_info: last-changed
-
-      #######################################################
-      # GLANCE CARD EXAMPLE
-      #######################################################
-
-      # Glance card for quick overview of key metrics
-      - type: glance
-        title: Luxpower System Overview
-        columns: 3
-        show_name: true
-        show_icon: true
-        show_state: true
-        state_color: true
-        entities:
-          - entity: sensor.luxpower_lxp_pv_power
-            name: Solar
-            icon: mdi:solar-panel
-          - entity: sensor.luxpower_lxp_load_power
-            name: Load
-            icon: mdi:flash
-          - entity: sensor.luxpower_lxp_battery_power
-            name: Battery
-            icon: mdi:battery
-          - entity: sensor.luxpower_lxp_battery_state_of_charge
-            name: Battery %
-            icon: mdi:battery-charging
-          - entity: sensor.luxpower_lxp_pv_energy
-            name: Today
-            icon: mdi:chart-bar
-            unit: kWh
-
-      #######################################################
-      # HORIZONTAL-STACK LAYOUT EXAMPLE
-      #######################################################
-
-      # Horizontal stack with multiple card types
-      - type: horizontal-stack
-        cards:
-          # Left card - Button card for PV Power
-          - type: custom:button-card
-            entity: sensor.luxpower_lxp_pv_power
-            icon: mdi:solar-panel
-            name: Solar
-            show_state: true
-            show_icon: true
-            styles:
-              card:
-                - height: 100px
-                - border-radius: 10px
-              icon:
-                - color: 'orange'
-                - width: 40px
-          
-          # Middle card - Button card for Load
-          - type: custom:button-card
-            entity: sensor.luxpower_lxp_load_power
-            icon: mdi:flash
-            name: Load
-            show_state: true
-            show_icon: true
-            styles:
-              card:
-                - height: 100px
-                - border-radius: 10px
-              icon:
-                - color: 'blue'
-                - width: 40px
-          
-          # Right card - Button card for Battery
-          - type: custom:button-card
-            entity: sensor.luxpower_lxp_battery_state_of_charge
-            icon: mdi:battery
-            name: Battery
-            show_state: true
-            show_icon: true
-            styles:
-              card:
-                - height: 100px
-                - border-radius: 10px
-              icon:
-                - color: 'green'
-                - width: 40px
-
-      #######################################################
-      # CUSTOM ENERGY FLOW CARD
+      # MAIN ENERGY FLOW VISUALIZATION
       #######################################################
 
       # Card-mod styled card to create a visual power flow
@@ -383,3 +83,98 @@ views:
               left: 50%
               color: white
               font-size: 16px
+              
+          # Flow arrows
+          - type: custom:state-icon
+            entity: sensor.luxpower_lxp_pv_power
+            icon: mdi:arrow-right
+            style:
+              top: 15%
+              left: 50%
+              transform: rotate(0deg)
+              color: '#FFD700'
+              '--mdc-icon-size': 30px
+              opacity: |
+                [[[  
+                  return states['sensor.luxpower_lxp_pv_power'].state > 0 ? '1' : '0';
+                ]]]
+                
+          - type: custom:state-icon
+            entity: sensor.luxpower_lxp_battery_power
+            icon: mdi:arrow-up
+            style:
+              top: 50%
+              left: 50%
+              transform: |
+                [[[  
+                  return states['sensor.luxpower_lxp_battery_power'].state < 0 ? 'rotate(0deg)' : 'rotate(180deg)';
+                ]]]
+              color: '#50C878'
+              '--mdc-icon-size': 30px
+              
+      #######################################################
+      # BATTERY STATUS CARD
+      #######################################################
+      
+      # Energy Gauge Bundle Card for Battery
+      - type: custom:energy-gauge-bundle-card
+        entity: sensor.luxpower_lxp_battery_state_of_charge
+        name: Battery Storage
+        unit: "%"
+        min: 0
+        max: 100
+        severity:
+          green: 50
+          yellow: 20
+          red: 0
+        complementary:
+          - entity: sensor.luxpower_lxp_battery_power
+            name: Current Power
+            unit: "W"
+            icon: mdi:flash
+          - entity: sensor.luxpower_lxp_pv_energy
+            name: Today's Solar
+            unit: "kWh"
+            icon: mdi:solar-power
+            
+      #######################################################
+      # POWER FLOW CHART
+      #######################################################
+      
+      # ApexCharts Card for Power Flow Comparison
+      - type: custom:apexcharts-card
+        header:
+          show: true
+          title: Power Flow
+          show_states: true
+        graph_span: 6h
+        span:
+          start: hour
+        apex_config:
+          chart:
+            height: 250
+          yaxis:
+            title:
+              text: 'Watts'
+        series:
+          - entity: sensor.luxpower_lxp_pv_power
+            name: Solar Generation
+            stroke_width: 2
+            color: '#FFD700'
+            group_by:
+              func: avg
+              duration: 5m
+          - entity: sensor.luxpower_lxp_load_power
+            name: Home Consumption
+            stroke_width: 2
+            color: '#FF6347'
+            group_by:
+              func: avg
+              duration: 5m
+          - entity: sensor.luxpower_lxp_battery_power
+            name: Battery Power
+            stroke_width: 2
+            color: '#4682B4'
+            group_by:
+              func: avg
+              duration: 5m
