@@ -1,4 +1,5 @@
 button_card_templates: !include_dir_merge_named "../../custom_components/ui_lovelace_minimalist/lovelace/ulm_templates/"
+translations: !include_dir_merge_named "../../custom_components/ui_lovelace_minimalist/lovelace/translations/"
 title: "Solar Assistant"
 theme: "minimalist-desktop"
 background: "var(--background-image)"
@@ -381,6 +382,7 @@ views:
             smoothing: true
             color_thresholds: false
             lower_bound: 0
+            group: false
             entities:
               - entity: sensor.luxpower_lxp_load_power
                 name: Load power
