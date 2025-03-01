@@ -79,7 +79,12 @@ views:
                   - entity: sensor.barometric_pressure_24h_spread
                     name: 24h Spread
                     layout: name|state
-                    state: '{{ states("sensor.barometric_pressure_24h_spread")|float|round(2) }} inHg'
+                    state: >-
+                      {% if states('sensor.barometric_pressure_24h_spread') != "unavailable" and states('sensor.barometric_pressure_24h_spread')|float(0) %}
+                        {{ states('sensor.barometric_pressure_24h_spread')|float|round(2) }} inHg
+                      {% else %}
+                        Unavailable
+                      {% endif %}
                     styles:
                       state:
                         color: '#B6B8BA'
@@ -100,6 +105,7 @@ views:
                 color: '#FF6853'
                 type: line
                 stroke_width: 3
+                opacity: 0.8
       - type: custom:vertical-stack-in-card
         cards:
           - type: entities
@@ -113,6 +119,9 @@ views:
                     layout: icon|state
                     state: '{{ states("sensor.st_00174194_wind_gust") }} mph'
                     styles:
+                      state:
+                        color: '#DDDDDD'
+                        font-size: 2.5em
                       icon:
                         color: '#8F3BB8'
                   - entity: sensor.st_00174194_wind_lull
@@ -121,11 +130,15 @@ views:
                     layout: icon|state
                     state: '{{ states("sensor.st_00174194_wind_lull") }} mph'
                     styles:
+                      state:
+                        color: '#DDDDDD'
+                        font-size: 2.5em
                       icon:
                         color: '#DBAF07'
           - type: custom:windrose-card
             hours_to_show: 4
-            wind_direction_entity: sensor.st_00174194_wind_direction_average
+            wind_direction_entity:
+              entity: sensor.st_00174194_wind_direction_average
             windspeed_entities:
               - entity: sensor.st_00174194_wind_speed_average
             speed_ranges:
@@ -135,6 +148,8 @@ views:
                 color: rgba(143, 59, 184, .6)
               - from_value: 25
                 color: rgba(255, 104, 83, .6)
+            beaufort_scale: true
+            card_height: 300
       - type: custom:vertical-stack-in-card
         cards:
           - type: entities
@@ -154,6 +169,9 @@ views:
                     layout: icon|state
                     state: '{{ states("sensor.st_00174194_precipitation_intensity") }}'
                     styles:
+                      state:
+                        color: '#DDDDDD'
+                        font-size: 2.5em
                       icon:
                         color: '#3D82FF'
                   - entity: sensor.st_00174194_precipitation
@@ -162,6 +180,9 @@ views:
                     layout: icon|state
                     state: '{{ states("sensor.st_00174194_precipitation") }} in'
                     styles:
+                      state:
+                        color: '#DDDDDD'
+                        font-size: 2.5em
                       icon:
                         color: '#20BD8C'
           - type: custom:mini-graph-card
@@ -193,6 +214,9 @@ views:
                     layout: icon|state
                     state: '{{ states("sensor.st_00174194_lightning_count") }} strikes'
                     styles:
+                      state:
+                        color: '#DDDDDD'
+                        font-size: 2.5em
                       icon:
                         color: '#DBAF07'
                   - entity: sensor.st_00174194_lightning_average_distance
@@ -201,6 +225,9 @@ views:
                     layout: icon|state
                     state: '{{ states("sensor.st_00174194_lightning_average_distance") }} mi'
                     styles:
+                      state:
+                        color: '#DDDDDD'
+                        font-size: 2.5em
                       icon:
                         color: '#FF6853'
           - type: custom:mini-graph-card

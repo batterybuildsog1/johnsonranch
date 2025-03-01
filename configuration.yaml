@@ -60,11 +60,6 @@ lovelace:
     - url: /local/community/lovelace-windrose-card/windrose-card.js
       type: module
 
-panel_iframe:
-  windy:
-    title: "Windy"
-    icon: mdi:weather-windy
-    url: "https://www.windy.com/"
 
 template:
   - sensor:
@@ -85,7 +80,6 @@ sensor:
     state_characteristic: distance_absolute
     max_age:
       hours: 24
-    unit_of_measurement: "inHg"
 
 weatherflow:
   api_token: 83b04b0d-dc6a-402f-91b7-28748e8e0f66
@@ -98,5 +92,13 @@ template:
         state: >-
           {% set trend = states('sensor.weatherflow_pressure_trend') %}
           {{ 'rising' if trend|float > 0.1 else 'falling' if trend|float < -0.1 else 'steady' }}
-
+        icon: >-
+          {% set trend = states('sensor.weatherflow_pressure_trend') %}
+          {% if trend|float > 0.1 %}
+            mdi:arrow-up-bold
+          {% elif trend|float < -0.1 %}
+            mdi:arrow-down-bold
+          {% else %}
+            mdi:arrow-right-bold
+          {% endif %}
 
