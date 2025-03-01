@@ -246,7 +246,7 @@ views:
       - type: custom:vertical-stack-in-card
         cards:
           - type: weather-forecast
-            entity: weather.home
+            entity: weather.home_weather
             name: Weather Forecast
             show_forecast: true
             forecast_type: daily
