@@ -45,26 +45,51 @@ lovelace:
       type: module
     - url: /local/community/battery-state-card/battery-state-card.js
       type: module
-
-udp:
-  port: 50222
-  local_ip: 192.168.1.100  # Your HA instance IP
-  
-sensor:
-  - platform: template
-    sensors:
-      windy_lat:
-        friendly_name: "Fixed Weather Latitude"
-        value: "38.3368"  # From 38°20'12.5"N
-        icon: mdi:latitude
-      windy_lon:
-        friendly_name: "Fixed Weather Longitude" 
-        value: "-114.1268"  # From 114°07'36.4"W
-        icon: mdi:longitude
+    - url: /local/community/compass-card/compass-card.js
+      type: module
+    - url: /local/community/lovelace-paper-buttons-row/paper-buttons-row.js
+      type: module
+    - url: /local/community/config-template-card/config-template-card.js
+      type: module
+    - url: /local/community/lovelace-windrose-card/windrose-card.js
+      type: module
 
 panel_iframe:
   windy:
     title: "Windy"
     icon: mdi:weather-windy
-    url: "https://www.windy.com"
+    url: "https://www.windy.com/"
+
+template:
+  - sensor:
+      - name: "Windy Latitude"
+        state: 38.3368
+        unit_of_measurement: "°"
+        icon: mdi:latitude
+      - name: "Windy Longitude"
+        state: -114.1268  # Negative for West
+        unit_of_measurement: "°" 
+        icon: mdi:longitude
+
+
+sensor:
+  - platform: statistics
+    name: "Barometric Pressure 24h Spread"
+    entity_id: sensor.weatherflow_sea_level_pressure
+    state_characteristic: distance_absolute
+    max_age:
+      hours: 24
+
+weatherflow:
+  api_token: 83b04b0d-dc6a-402f-91b7-28748e8e0f66
+  station_id: 170071
+
+
+template:
+  - sensor:
+      - name: "Pressure Trend Icon"
+        state: >-
+          {% set trend = states('sensor.weatherflow_pressure_trend') %}
+          {{ 'rising' if trend|float > 0.1 else 'falling' if trend|float < -0.1 else 'steady' }}
+
 
