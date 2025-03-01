@@ -149,6 +149,25 @@ weather:
 # Moon sensor for phases
 sensor:
   - platform: moon
+  
+  # Statistics sensors for WindRose card
+  - platform: statistics
+    name: "Wind Direction Average Statistics"
+    entity_id: sensor.st_00174194_wind_direction
+    state_characteristic: mean
+    sampling_size: 20
+    max_age:
+      hours: 4
+    precision: 0
+  
+  - platform: statistics
+    name: "Wind Speed Average Statistics"
+    entity_id: sensor.st_00174194_wind_speed
+    state_characteristic: mean
+    sampling_size: 20
+    max_age:
+      hours: 4
+    precision: 1
 
 
 template:
@@ -520,6 +539,27 @@ template:
           {% else %}
             {{ states('sensor.st_00174194_wind_speed') | float(0) | round(1) }}
           {% endif %}
+        unit_of_measurement: "mph"
+        icon: mdi:weather-windy
+        availability: >-
+          {{ states('sensor.st_00174194_wind_speed') not in ['unavailable', 'unknown', 'none', ''] }}
+          
+      # Wind direction and speed average sensors for WindRose card
+      - name: "Wind Direction Average"
+        unique_id: st_00174194_wind_direction_average
+        state: >-
+          {% set direction = states('sensor.st_00174194_wind_direction') | float(0) %}
+          {{ direction | round(0) }}
+        unit_of_measurement: "°"
+        icon: mdi:compass
+        availability: >-
+          {{ states('sensor.st_00174194_wind_direction') not in ['unavailable', 'unknown', 'none', ''] }}
+        
+      - name: "Wind Speed Average"
+        unique_id: st_00174194_wind_speed_average
+        state: >-
+          {% set speed = states('sensor.st_00174194_wind_speed') | float(0) %}
+          {{ speed | round(1) }}
         unit_of_measurement: "mph"
         icon: mdi:weather-windy
         availability: >-
