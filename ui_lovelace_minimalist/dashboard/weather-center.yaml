@@ -7,6 +7,7 @@ views:
     path: overview
     cards:
       - type: custom:vertical-stack-in-card
+        title: Current Conditions
         cards:
           - type: grid
             columns: 2
@@ -18,7 +19,7 @@ views:
                     name: Temperature
                     layout: icon|state
                     icon: mdi:thermometer
-                    state: "{{ states('sensor.st_00174194_temperature') }}"
+                    state: "{{ states('sensor.st_00174194_temperature') }} °F"
                     styles:
                       state:
                         color: '#DDDDDD'
@@ -29,7 +30,7 @@ views:
                     name: Humidity
                     layout: icon|state
                     icon: mdi:water-percent
-                    state: "{{ states('sensor.st_00174194_humidity') }}"
+                    state: "{{ states('sensor.st_00174194_humidity') }}%"
                     styles:
                       state:
                         color: '#DDDDDD'
@@ -42,6 +43,7 @@ views:
                     color: '#FF6853'
                     indicator:
                       type: arrow-inward
+                      size: 15
                 value_sensors:
                   - sensor: sensor.st_00174194_wind_speed_average
                     unit: mph
@@ -52,6 +54,11 @@ views:
                     show: true
                   labels:
                     color: '#FFFFFF'
+                    north_label: "N"
+                    east_label: "E"
+                    south_label: "S"
+                    west_label: "W"
+                    font_size: 14
       - type: custom:vertical-stack-in-card
         cards:
           - type: entities
@@ -62,29 +69,31 @@ views:
                   - entity: sensor.st_00174194_air_pressure
                     name: Pressure
                     icon: >
-                      {% set trend = states('sensor.st_00174194_air_pressure')
-                      %} {% if trend > 1013.25 %}mdi:arrow-top-right {% elif
-                      trend < 1013.25 %}mdi:arrow-bottom-right {% else
-                      %}mdi:arrow-right{% endif %}
+                      {% set current = states('sensor.st_00174194_air_pressure')|float %}
+                      {% set previous = state_attr('sensor.st_00174194_air_pressure', 'previous_reading')|default(current, true)|float %}
+                      {% if (current - previous) > 1.0 %}mdi:arrow-up-bold
+                      {% elif (current - previous) > 0.2 %}mdi:arrow-top-right
+                      {% elif (current - previous) < -1.0 %}mdi:arrow-down-bold
+                      {% elif (current - previous) < -0.2 %}mdi:arrow-bottom-right
+                      {% else %}mdi:arrow-right{% endif %}
                     layout: icon|state
                     state: >
-                      {{
-                      states("sensor.st_00174194_air_pressure")|float|round(2)
-                      }} hPa
+                      {{ states("sensor.st_00174194_air_pressure")|float|round(2) }} hPa 
+                      ({{ (states("sensor.st_00174194_air_pressure")|float * 0.02953)|round(2) }} inHg)
                     styles:
                       state:
                         color: '#B6B8BA'
                       icon:
                         color: '#3D82FF'
                   - entity: sensor.barometric_pressure_24h_spread
-                    name: 24h Spread
-                    layout: name|state
-                    state: >-
-                      {% if states('sensor.barometric_pressure_24h_spread') != "unavailable" and states('sensor.barometric_pressure_24h_spread')|float(0) %}
-                        {{ states('sensor.barometric_pressure_24h_spread')|float|round(2) }} inHg
-                      {% else %}
-                        Unavailable
-                      {% endif %}
+                    name: 24h Trend
+                    icon: >
+                      {% set spread = states("sensor.barometric_pressure_24h_spread")|float %}
+                      {% if spread > 0.05 %}mdi:trending-up
+                      {% elif spread < -0.05 %}mdi:trending-down
+                      {% else %}mdi:trending-neutral{% endif %}
+                    layout: icon|name|state
+                    state: '{{ states("sensor.barometric_pressure_24h_spread")|float|round(2) }} inHg'
                     styles:
                       state:
                         color: '#B6B8BA'
@@ -101,16 +110,36 @@ views:
                 stroke_width: 2
                 opacity: 0.2
               - entity: sensor.barometric_pressure_24h_spread
-                name: Pressure Spread
+                name: Pressure Trend
                 color: '#FF6853'
                 type: line
                 stroke_width: 3
-                opacity: 0.8
+                fill: false
+                show:
+                  in_header: true
       - type: custom:vertical-stack-in-card
         cards:
           - type: entities
             title: Wind Analysis
             entities:
+              - entity: sensor.st_00174194_wind_speed_average
+                name: Wind Speed
+                icon: mdi:weather-windy
+                secondary_info: >-
+                  {% set speed = states('sensor.st_00174194_wind_speed_average')|float %}
+                  {% if speed < 1 %}Calm
+                  {% elif speed < 4 %}Light Air
+                  {% elif speed < 8 %}Light Breeze
+                  {% elif speed < 13 %}Gentle Breeze
+                  {% elif speed < 19 %}Moderate Breeze
+                  {% elif speed < 25 %}Fresh Breeze
+                  {% elif speed < 32 %}Strong Breeze
+                  {% elif speed < 39 %}Near Gale
+                  {% elif speed < 47 %}Gale
+                  {% elif speed < 55 %}Strong Gale
+                  {% elif speed < 64 %}Storm
+                  {% elif speed < 73 %}Violent Storm
+                  {% else %}Hurricane Force{% endif %}
               - type: custom:paper-buttons-row
                 buttons:
                   - entity: sensor.st_00174194_wind_gust
@@ -119,9 +148,6 @@ views:
                     layout: icon|state
                     state: '{{ states("sensor.st_00174194_wind_gust") }} mph'
                     styles:
-                      state:
-                        color: '#DDDDDD'
-                        font-size: 2.5em
                       icon:
                         color: '#8F3BB8'
                   - entity: sensor.st_00174194_wind_lull
@@ -130,30 +156,45 @@ views:
                     layout: icon|state
                     state: '{{ states("sensor.st_00174194_wind_lull") }} mph'
                     styles:
-                      state:
-                        color: '#DDDDDD'
-                        font-size: 2.5em
                       icon:
                         color: '#DBAF07'
           - type: custom:windrose-card
             hours_to_show: 4
-            wind_direction_entity:
-              entity: sensor.st_00174194_wind_direction_average
+            wind_direction_entity: sensor.st_00174194_wind_direction_average
             windspeed_entities:
               - entity: sensor.st_00174194_wind_speed_average
             speed_ranges:
               - from_value: 0
-                color: rgba(61, 130, 255, .6)
-              - from_value: 15
-                color: rgba(143, 59, 184, .6)
+                to_value: 3
+                color: rgba(32, 189, 140, 0.6)
+                label: Calm
+              - from_value: 3
+                to_value: 8 
+                color: rgba(61, 130, 255, 0.6)
+                label: Light
+              - from_value: 8
+                to_value: 13
+                color: rgba(143, 59, 184, 0.6)
+                label: Moderate
+              - from_value: 13
+                to_value: 19
+                color: rgba(219, 175, 7, 0.6)
+                label: Fresh
+              - from_value: 19
+                to_value: 25
+                color: rgba(255, 165, 0, 0.6)
+                label: Strong
               - from_value: 25
-                color: rgba(255, 104, 83, .6)
-            beaufort_scale: true
-            card_height: 300
+                color: rgba(255, 104, 83, 0.6)
+                label: Gale+
+            show_card_title: true
+            card_title: Wind Rose (4hr)
+            direction_labels: true
       - type: custom:vertical-stack-in-card
         cards:
           - type: entities
             title: Precipitation Analysis
+            icon: mdi:water-percent
             entities:
               - type: custom:paper-buttons-row
                 buttons:
@@ -169,9 +210,6 @@ views:
                     layout: icon|state
                     state: '{{ states("sensor.st_00174194_precipitation_intensity") }}'
                     styles:
-                      state:
-                        color: '#DDDDDD'
-                        font-size: 2.5em
                       icon:
                         color: '#3D82FF'
                   - entity: sensor.st_00174194_precipitation
@@ -180,18 +218,17 @@ views:
                     layout: icon|state
                     state: '{{ states("sensor.st_00174194_precipitation") }} in'
                     styles:
-                      state:
-                        color: '#DDDDDD'
-                        font-size: 2.5em
                       icon:
                         color: '#20BD8C'
           - type: custom:mini-graph-card
             entities:
               - entity: sensor.st_00174194_precipitation
                 color: '#3D82FF'
+                name: "Current"
               - entity: sensor.st_00174194_precipitation
                 color: '#8F3BB8'
                 name: "Accumulated"
+                aggregate_func: max
             hours_to_show: 24
             points_per_hour: 4
             line_width: 2
@@ -203,8 +240,26 @@ views:
               legend: true
       - type: custom:vertical-stack-in-card
         cards:
+          - type: weather-forecast
+            entity: weather.home
+            name: Weather Forecast
+            show_forecast: true
+            forecast_type: daily
+          - type: entities
+            title: Weather Alerts
+            show_header_toggle: false
+            entities:
+              - entity: binary_sensor.severe_weather_alert
+                name: Severe Weather Alert
+                secondary_info: last_triggered
+              - entity: binary_sensor.flood_warning
+                name: Flood Warning
+                secondary_info: last_triggered
+      - type: custom:vertical-stack-in-card
+        cards:
           - type: entities
             title: Storm Tracking
+            icon: mdi:flash-alert
             entities:
               - type: custom:paper-buttons-row
                 buttons:
@@ -214,9 +269,6 @@ views:
                     layout: icon|state
                     state: '{{ states("sensor.st_00174194_lightning_count") }} strikes'
                     styles:
-                      state:
-                        color: '#DDDDDD'
-                        font-size: 2.5em
                       icon:
                         color: '#DBAF07'
                   - entity: sensor.st_00174194_lightning_average_distance
@@ -225,18 +277,18 @@ views:
                     layout: icon|state
                     state: '{{ states("sensor.st_00174194_lightning_average_distance") }} mi'
                     styles:
-                      state:
-                        color: '#DDDDDD'
-                        font-size: 2.5em
                       icon:
                         color: '#FF6853'
           - type: custom:mini-graph-card
             entities:
               - entity: sensor.st_00174194_lightning_count
                 color: '#DBAF07'
+                name: "Strike Count"
+                show_state: true
               - entity: sensor.st_00174194_lightning_count
                 color: '#FF6853'
                 name: "3hr Count"
+                aggregate_func: sum
             hours_to_show: 12
             points_per_hour: 4
             line_width: 2

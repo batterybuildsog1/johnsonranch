@@ -61,44 +61,177 @@ lovelace:
       type: module
 
 
-template:
-  - sensor:
-      - name: "Windy Latitude"
-        state: 38.3368
-        unit_of_measurement: "°"
-        icon: mdi:latitude
-      - name: "Windy Longitude"
-        state: -114.1268  # Negative for West
-        unit_of_measurement: "°" 
-        icon: mdi:longitude
-
+# Use input_number helpers for static coordinates - more efficient than template sensors
+input_number:
+  windy_latitude:
+    name: Windy Latitude
+    min: -90
+    max: 90
+    step: 0.0001
+    mode: box
+    unit_of_measurement: "°"
+    icon: mdi:latitude
+    initial: 38.3368
+  
+  windy_longitude:
+    name: Windy Longitude
+    min: -180
+    max: 180
+    step: 0.0001
+    mode: box
+    unit_of_measurement: "°"
+    icon: mdi:longitude
+    initial: -114.1268
 
 sensor:
+  # Pressure statistics
   - platform: statistics
     name: "Barometric Pressure 24h Spread"
     entity_id: sensor.st_00174194_air_pressure
     state_characteristic: distance_absolute
     max_age:
       hours: 24
+    precision: 2
+    
+  # Wind statistics for WindRose card
+  - platform: statistics
+    name: "Wind Speed 1h Stats"
+    entity_id: sensor.weatherflow_wind_speed
+    state_characteristic: mean
+    max_age:
+      hours: 1
+    precision: 1
+  
+  - platform: statistics
+    name: "Wind Speed 6h Stats" 
+    entity_id: sensor.weatherflow_wind_speed
+    state_characteristic: mean
+    max_age:
+      hours: 6
+    precision: 1
+  
+  - platform: statistics
+    name: "Wind Speed 24h Stats"
+    entity_id: sensor.weatherflow_wind_speed
+    state_characteristic: mean
+    max_age:
+      hours: 24
+    precision: 1
+    
+  - platform: statistics
+    name: "Wind Direction 24h Stats"
+    entity_id: sensor.weatherflow_wind_direction
+    state_characteristic: mean
+    max_age:
+      hours: 24
+    precision: 0
 
+# Store sensitive data in secrets.yaml instead of exposing in configuration
 weatherflow:
-  api_token: 83b04b0d-dc6a-402f-91b7-28748e8e0f66
+  api_token: !secret weatherflow_api_token
   station_id: 170071
+  
+# Sun integration needed for sun elevation sensor
+sun:
+
+# Moon sensor for phases
+sensor:
+  - platform: moon
 
 
 template:
   - sensor:
       - name: "Pressure Trend Icon"
         state: >-
-          {% set trend = states('sensor.weatherflow_pressure_trend') %}
-          {{ 'rising' if trend|float > 0.1 else 'falling' if trend|float < -0.1 else 'steady' }}
+          {% set trend = states('sensor.weatherflow_pressure_trend')|float(0) %}
+          {{ 'rising' if trend > 0.1 else 'falling' if trend < -0.1 else 'steady' }}
         icon: >-
-          {% set trend = states('sensor.weatherflow_pressure_trend') %}
-          {% if trend|float > 0.1 %}
-            mdi:arrow-up-bold
-          {% elif trend|float < -0.1 %}
-            mdi:arrow-down-bold
+          {% set trend = states('sensor.weatherflow_pressure_trend')|float(0) %}
+          {{ 'mdi:arrow-up-bold' if trend > 0.1 else 'mdi:arrow-down-bold' if trend < -0.1 else 'mdi:arrow-right-bold' }}
+        availability: >-
+          {{ states('sensor.weatherflow_pressure_trend') not in ['unavailable', 'unknown', 'none', ''] }}
+        attributes:
+          friendly_name: "Pressure Trend"
+          unit_of_measurement: "mb/h"
+          
+      - name: "Pressure Trend Derivative"
+        state: >-
+          {% set trend = states('sensor.weatherflow_pressure_trend')|float(0) %}
+          {% set prev_trend = states.sensor.weatherflow_pressure_trend.attributes.get('previous_reading', 0)|float(0) %}
+          {{ ((trend - prev_trend) * 10) | round(2) }}
+        icon: >-
+          {% set trend = states('sensor.weatherflow_pressure_trend')|float(0) %}
+          {% set prev_trend = states.sensor.weatherflow_pressure_trend.attributes.get('previous_reading', 0)|float(0) %}
+          {% set derivative = ((trend - prev_trend) * 10) | round(2) %}
+          {{ 'mdi:trending-up' if derivative > 0.05 else 'mdi:trending-down' if derivative < -0.05 else 'mdi:trending-neutral' }}
+        availability: >-
+          {{ states('sensor.weatherflow_pressure_trend') not in ['unavailable', 'unknown', 'none', ''] }}
+        
+      - name: "Pressure inHg"
+        state: >-
+          {% set pressure = states('sensor.st_00174194_air_pressure')|float(0) %}
+          {{ (pressure * 0.02953) | round(2) }}
+        unit_of_measurement: "inHg"
+        icon: mdi:gauge
+        availability: >-
+          {{ states('sensor.st_00174194_air_pressure') not in ['unavailable', 'unknown', 'none', ''] }}
+          
+      - name: "Sun Elevation"
+        state: "{{ state_attr('sun.sun', 'elevation') | float(0) | round(1) }}"
+        unit_of_measurement: "°"
+        icon: >-
+          {% set elevation = state_attr('sun.sun', 'elevation') | float(0) %}
+          {% if elevation > 0 %}
+            mdi:white-balance-sunny
+          {% elif elevation > -6 %}
+            mdi:weather-sunset
+          {% elif elevation > -12 %}
+            mdi:weather-night
           {% else %}
-            mdi:arrow-right-bold
+            mdi:weather-night
+          {% endif %}
+          
+      - name: "Moon Phase"
+        state: >-
+          {% set phase = states('sensor.moon') | lower %}
+          {% if 'new moon' in phase %}
+            New Moon
+          {% elif 'waxing crescent' in phase %}
+            Waxing Crescent
+          {% elif 'first quarter' in phase %}
+            First Quarter
+          {% elif 'waxing gibbous' in phase %}
+            Waxing Gibbous
+          {% elif 'full moon' in phase %}
+            Full Moon
+          {% elif 'waning gibbous' in phase %}
+            Waning Gibbous
+          {% elif 'last quarter' in phase %}
+            Last Quarter
+          {% elif 'waning crescent' in phase %}
+            Waning Crescent
+          {% else %}
+            Unknown
+          {% endif %}
+        icon: >-
+          {% set phase = states('sensor.moon') | lower %}
+          {% if 'new moon' in phase %}
+            mdi:moon-new
+          {% elif 'waxing crescent' in phase %}
+            mdi:moon-waxing-crescent
+          {% elif 'first quarter' in phase %}
+            mdi:moon-first-quarter
+          {% elif 'waxing gibbous' in phase %}
+            mdi:moon-waxing-gibbous
+          {% elif 'full moon' in phase %}
+            mdi:moon-full
+          {% elif 'waning gibbous' in phase %}
+            mdi:moon-waning-gibbous
+          {% elif 'last quarter' in phase %}
+            mdi:moon-last-quarter
+          {% elif 'waning crescent' in phase %}
+            mdi:moon-waning-crescent
+          {% else %}
+            mdi:moon-new
           {% endif %}
 
