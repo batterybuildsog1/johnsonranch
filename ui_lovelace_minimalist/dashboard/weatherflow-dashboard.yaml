@@ -1,0 +1,144 @@
+title: WeatherFlow Weather Center
+views:
+  - title: Weather
+    path: weather
+    icon: mdi:weather-partly-cloudy
+    cards:
+      # Temperature and Humidity Section
+      - type: vertical-stack
+        cards:
+          - type: custom:mini-graph-card
+            name: Outdoor Temperature
+            entities:
+              - entity: sensor.st_00174194_temperature
+                name: Temperature
+              - entity: sensor.st_00174194_feels_like
+                name: Feels Like
+            hours_to_show: 24
+            points_per_hour: 4
+            line_width: 2
+            font_size: 75
+            animate: true
+            hour24: true
+            show:
+              fill: fade
+              labels: true
+
+          - type: custom:mini-graph-card
+            name: Humidity
+            entities:
+              - entity: sensor.st_00174194_humidity
+                name: Humidity
+              - entity: sensor.st_00174194_dew_point
+                name: Dew Point
+            hours_to_show: 24
+            points_per_hour: 4
+            line_width: 2
+            font_size: 75
+            animate: true
+            hour24: true
+            show:
+              fill: fade
+              labels: true
+
+      # Wind Section
+      - type: horizontal-stack
+        cards:
+          - type: custom:mini-graph-card
+            name: Wind Speed
+            entities:
+              - entity: sensor.st_00174194_wind_speed
+                name: Current
+              - entity: sensor.st_00174194_wind_gust
+                name: Gust
+              - entity: sensor.st_00174194_wind_lull
+                name: Lull
+            hours_to_show: 24
+            points_per_hour: 4
+            line_width: 2
+            font_size: 75
+            animate: true
+            show:
+              fill: fade
+              labels: true
+
+          - type: custom:windrose-card
+            title: Wind Direction
+            entity: sensor.st_00174194_wind_direction
+            direction_entity: sensor.st_00174194_wind_direction
+            speed_entity: sensor.st_00174194_wind_speed
+            size: 200
+
+      # Pressure and Rain Section
+      - type: horizontal-stack
+        cards:
+          - type: custom:mini-graph-card
+            name: Air Pressure
+            entities:
+              - entity: sensor.st_00174194_air_pressure
+                name: Pressure
+            hours_to_show: 24
+            points_per_hour: 4
+            line_width: 2
+            font_size: 75
+            animate: true
+            show:
+              fill: fade
+              labels: true
+
+          - type: custom:mini-graph-card
+            name: Rain Rate
+            entities:
+              - entity: sensor.st_00174194_precipitation_intensity
+                name: Rain Rate
+            hours_to_show: 24
+            points_per_hour: 4
+            line_width: 2
+            font_size: 75
+            animate: true
+            show:
+              fill: fade
+              labels: true
+
+      # Solar and Lightning Section
+      - type: horizontal-stack
+        cards:
+          - type: custom:mini-graph-card
+            name: Solar Radiation
+            entities:
+              - entity: sensor.st_00174194_irradiance
+                name: Solar
+              - entity: sensor.st_00174194_uv_index
+                name: UV Index
+            hours_to_show: 24
+            points_per_hour: 4
+            line_width: 2
+            font_size: 75
+            animate: true
+            show:
+              fill: fade
+              labels: true
+
+          - type: custom:mini-graph-card
+            name: Lightning
+            entities:
+              - entity: sensor.st_00174194_lightning_count
+                name: Strikes
+              - entity: sensor.st_00174194_lightning_average_distance
+                name: Distance
+            hours_to_show: 24
+            points_per_hour: 4
+            line_width: 2
+            font_size: 75
+            animate: true
+            show:
+              fill: fade
+              labels: true
+
+      # Weather Radar Map
+      - type: custom:weather-radar-card
+        title: Weather Radar
+        style: |
+          ha-card {
+            height: 500px;
+          }
