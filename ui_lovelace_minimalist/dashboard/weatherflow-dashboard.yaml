@@ -64,8 +64,7 @@ views:
 
           - type: custom:windrose-card
             title: Wind Direction
-            entity: sensor.st_00174194_wind_direction
-            direction_entity: sensor.st_00174194_wind_direction
+            wind_direction_entity: sensor.st_00174194_wind_direction
             speed_entity: sensor.st_00174194_wind_speed
             size: 200
 

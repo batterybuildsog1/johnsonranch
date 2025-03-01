@@ -99,6 +99,10 @@ views:
                         color: '#B6B8BA'
           - type: custom:apexcharts-card
             graph_span: 24h
+            header:
+              show: true
+              title: Pressure Trend
+            show_states: true
             apex_config:
               chart:
                 height: 200
@@ -114,6 +118,7 @@ views:
                 color: '#FF6853'
                 type: line
                 stroke_width: 3
+                curve: smooth
                 fill: false
                 show:
                   in_header: true
