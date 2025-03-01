@@ -81,10 +81,11 @@ template:
 sensor:
   - platform: statistics
     name: "Barometric Pressure 24h Spread"
-    entity_id: sensor.weatherflow_sea_level_pressure
+    entity_id: sensor.st_00174194_air_pressure
     state_characteristic: distance_absolute
     max_age:
       hours: 24
+    unit_of_measurement: "inHg"
 
 weatherflow:
   api_token: 83b04b0d-dc6a-402f-91b7-28748e8e0f66
