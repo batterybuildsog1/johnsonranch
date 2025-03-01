@@ -68,7 +68,8 @@ views:
             use_beaufort: false
             use_statistics: false
             direction_compensation: 0
-            wind_direction_entity: sensor.st_00174194_wind_direction_average
+            wind_direction_entity:
+              entity: sensor.st_00174194_wind_direction_average
             windspeed_entities:
               - entity: sensor.st_00174194_wind_speed_average
                 name: Wind Speed
