@@ -160,6 +160,100 @@ template:
           friendly_name: "Pressure Trend"
           unit_of_measurement: "mb/h"
           
+      # Wind sensors for WindRose card
+      - name: "Wind Direction Numeric"
+        unique_id: wind_direction_numeric
+        state: >-
+          {% set direction = states('sensor.st_00174194_wind_direction') %}
+          {% if direction | float(0) > 0 or direction | int(0) == 0 %}
+            {{ direction | float(0) | round(0) }}
+          {% elif direction in ['N', 'n', 'north'] %}
+            0
+          {% elif direction in ['NNE', 'nne'] %}
+            22.5
+          {% elif direction in ['NE', 'ne'] %}
+            45
+          {% elif direction in ['ENE', 'ene'] %}
+            67.5
+          {% elif direction in ['E', 'e', 'east'] %}
+            90
+          {% elif direction in ['ESE', 'ese'] %}
+            112.5
+          {% elif direction in ['SE', 'se'] %}
+            135
+          {% elif direction in ['SSE', 'sse'] %}
+            157.5
+          {% elif direction in ['S', 's', 'south'] %}
+            180
+          {% elif direction in ['SSW', 'ssw'] %}
+            202.5
+          {% elif direction in ['SW', 'sw'] %}
+            225
+          {% elif direction in ['WSW', 'wsw'] %}
+            247.5
+          {% elif direction in ['W', 'w', 'west'] %}
+            270
+          {% elif direction in ['WNW', 'wnw'] %}
+            292.5
+          {% elif direction in ['NW', 'nw'] %}
+            315
+          {% elif direction in ['NNW', 'nnw'] %}
+            337.5
+          {% else %}
+            {{ states('sensor.wind_direction_numeric') }}
+          {% endif %}
+        unit_of_measurement: "°"
+        icon: mdi:compass
+        availability: >-
+          {{ states('sensor.st_00174194_wind_direction') not in ['unavailable', 'unknown', 'none', ''] }}
+        
+      - name: "Wind Speed Numeric"
+        unique_id: wind_speed_numeric
+        state: >-
+          {% set speed = states('sensor.st_00174194_wind_speed') %}
+          {% if speed is number or speed | float(false) != false %}
+            {{ speed | float(0) | round(1) }}
+          {% else %}
+            {{ states('sensor.wind_speed_numeric') }}
+          {% endif %}
+        unit_of_measurement: "mph"
+        icon: mdi:weather-windy
+        availability: >-
+          {{ states('sensor.st_00174194_wind_speed') not in ['unavailable', 'unknown', 'none', ''] }}
+          
+      - name: "Wind Direction 1h Average"
+        unique_id: wind_direction_1h_avg
+        state: >-
+          {% set directions = namespace(values=[]) %}
+          {% set now = now() %}
+          {% set one_hour_ago = now - timedelta(hours=1) %}
+          {% for item in state_attr('sensor.st_00174194_wind_direction', 'historical_values') if item.last_changed > one_hour_ago %}
+            {% set directions.values = directions.values + [item.state | float(0)] %}
+          {% endfor %}
+          {% if directions.values | length > 0 %}
+            {{ (directions.values | sum / directions.values | length) | round(0) }}
+          {% else %}
+            {{ states('sensor.st_00174194_wind_direction') | float(0) | round(0) }}
+          {% endif %}
+        unit_of_measurement: "°"
+        icon: mdi:compass-outline
+        
+      - name: "Wind Speed 1h Average"
+        unique_id: wind_speed_1h_avg
+        state: >-
+          {% set speeds = namespace(values=[]) %}
+          {% set now = now() %}
+          {% set one_hour_ago = now - timedelta(hours=1) %}
+          {% for item in state_attr('sensor.st_00174194_wind_speed', 'historical_values') if item.last_changed > one_hour_ago %}
+            {% set speeds.values = speeds.values + [item.state | float(0)] %}
+          {% endfor %}
+          {% if speeds.values | length > 0 %}
+            {{ (speeds.values | sum / speeds.values | length) | round(1) }}
+          {% else %}
+            {{ states('sensor.st_00174194_wind_speed') | float(0) | round(1) }}
+          {% endif %}
+        unit_of_measurement: "mph"
+        icon: mdi:weather-windy
       - name: "Pressure Trend Derivative"
         state: >-
           {% set trend = states('sensor.weatherflow_pressure_trend')|float(0) %}
@@ -172,6 +266,41 @@ template:
           {{ 'mdi:trending-up' if derivative > 0.05 else 'mdi:trending-down' if derivative < -0.05 else 'mdi:trending-neutral' }}
         availability: >-
           {{ states('sensor.weatherflow_pressure_trend') not in ['unavailable', 'unknown', 'none', ''] }}
+          
+      # Wind direction additional statistics
+      - name: "Wind Direction 6h Average"
+        unique_id: wind_direction_6h_avg
+        state: >-
+          {% set directions = namespace(values=[]) %}
+          {% set now = now() %}
+          {% set six_hours_ago = now - timedelta(hours=6) %}
+          {% for item in state_attr('sensor.st_00174194_wind_direction', 'historical_values') if item.last_changed > six_hours_ago %}
+            {% set directions.values = directions.values + [item.state | float(0)] %}
+          {% endfor %}
+          {% if directions.values | length > 0 %}
+            {{ (directions.values | sum / directions.values | length) | round(0) }}
+          {% else %}
+            {{ states('sensor.st_00174194_wind_direction') | float(0) | round(0) }}
+          {% endif %}
+        unit_of_measurement: "°"
+        icon: mdi:compass-outline
+        
+      - name: "Wind Speed 6h Average"
+        unique_id: wind_speed_6h_avg
+        state: >-
+          {% set speeds = namespace(values=[]) %}
+          {% set now = now() %}
+          {% set six_hours_ago = now - timedelta(hours=6) %}
+          {% for item in state_attr('sensor.st_00174194_wind_speed', 'historical_values') if item.last_changed > six_hours_ago %}
+            {% set speeds.values = speeds.values + [item.state | float(0)] %}
+          {% endfor %}
+          {% if speeds.values | length > 0 %}
+            {{ (speeds.values | sum / speeds.values | length) | round(1) }}
+          {% else %}
+            {{ states('sensor.st_00174194_wind_speed') | float(0) | round(1) }}
+          {% endif %}
+        unit_of_measurement: "mph"
+        icon: mdi:weather-windy
         
       - name: "Pressure inHg"
         state: >-
@@ -240,4 +369,48 @@ template:
           {% else %}
             mdi:moon-new
           {% endif %}
+      
+      # Wind direction information for the WindRose card
+      - name: "Wind Direction Cardinal"
+        unique_id: wind_direction_cardinal
+        state: >-
+          {% set direction = states('sensor.st_00174194_wind_direction') | float(0) %}
+          {% if 348.75 <= direction or direction < 11.25 %}
+            N
+          {% elif 11.25 <= direction < 33.75 %}
+            NNE
+          {% elif 33.75 <= direction < 56.25 %}
+            NE
+          {% elif 56.25 <= direction < 78.75 %}
+            ENE
+          {% elif 78.75 <= direction < 101.25 %}
+            E
+          {% elif 101.25 <= direction < 123.75 %}
+            ESE
+          {% elif 123.75 <= direction < 146.25 %}
+            SE
+          {% elif 146.25 <= direction < 168.75 %}
+            SSE
+          {% elif 168.75 <= direction < 191.25 %}
+            S
+          {% elif 191.25 <= direction < 213.75 %}
+            SSW
+          {% elif 213.75 <= direction < 236.25 %}
+            SW
+          {% elif 236.25 <= direction < 258.75 %}
+            WSW
+          {% elif 258.75 <= direction < 281.25 %}
+            W
+          {% elif 281.25 <= direction < 303.75 %}
+            WNW
+          {% elif 303.75 <= direction < 326.25 %}
+            NW
+          {% elif 326.25 <= direction < 348.75 %}
+            NNW
+          {% else %}
+            N
+          {% endif %}
+        icon: mdi:compass
+        availability: >-
+          {{ states('sensor.st_00174194_wind_direction') not in ['unavailable', 'unknown', 'none', ''] }}
 

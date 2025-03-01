@@ -63,9 +63,46 @@ views:
               labels: true
 
           - type: custom:windrose-card
-            title: Wind Direction
-            wind_direction_entity: sensor.st_00174194_wind_direction
-            speed_entity: sensor.st_00174194_wind_speed
+            title: Wind Rose (4hr)
+            show_card_title: true
+            wind_direction_entity:
+              entity: sensor.wind_direction_1h_avg
+              use_statistics: false
+              direction_compensation: 0
+            windspeed_entities:
+              - entity: sensor.wind_speed_1h_avg
+                name: Wind Speed
+            data_period:
+              hours_to_show: 4
+            speed_ranges:
+              - from_value: 0
+                to_value: 3
+                color: rgba(32, 189, 140, 0.6)
+                label: Calm
+              - from_value: 3
+                to_value: 8
+                color: rgba(61, 130, 255, 0.6)
+                label: Light
+              - from_value: 8
+                to_value: 13
+                color: rgba(143, 59, 184, 0.6)
+                label: Moderate
+              - from_value: 13
+                to_value: 19
+                color: rgba(219, 175, 7, 0.6)
+                label: Fresh
+              - from_value: 19
+                to_value: 25
+                color: rgba(255, 165, 0, 0.6)
+                label: Strong
+              - from_value: 25
+                color: rgba(255, 104, 83, 0.6)
+                label: Gale+
+            direction_labels:
+              show_cardinals: true
+              cardinals: NESW
+            refresh_interval: 300
+            wind_direction_count: 16
             size: 200
 
       # Pressure and Rain Section
@@ -133,7 +170,24 @@ views:
             show:
               fill: fade
               labels: true
+              
+      # Weather Alerts Section
+      - type: entities
+        title: Weather Alerts
+        show_header_toggle: false
+        entities:
+          - entity: binary_sensor.severe_weather_alert
+            name: Severe Weather Alert
+            icon: mdi:weather-lightning-rainy
+          - entity: binary_sensor.flood_warning
+            name: Flood Warning
+            icon: mdi:home-flood
 
+      # Weather Forecast
+      - type: weather-forecast
+        entity: weather.weatherflow
+        show_forecast: true
+        
       # Weather Radar Map
       - type: custom:weather-radar-card
         title: Weather Radar
