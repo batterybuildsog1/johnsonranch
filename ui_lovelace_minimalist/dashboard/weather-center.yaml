@@ -14,22 +14,22 @@ views:
             cards:
               - type: custom:paper-buttons-row
                 buttons:
-                  - entity: sensor.weatherflow_temperature
+                  - entity: sensor.st_00174194_temperature
                     name: Temperature
                     layout: icon|state
                     icon: mdi:thermometer
-                    state: "{{ states('sensor.weatherflow_temperature') }}"
+                    state: "{{ states('sensor.st_00174194_temperature') }}"
                     styles:
                       state:
                         color: '#DDDDDD'
                         font-size: 2.5em
                       icon:
                         color: '#3D82FF'
-                  - entity: sensor.weatherflow_humidity
+                  - entity: sensor.st_00174194_humidity
                     name: Humidity
                     layout: icon|state
                     icon: mdi:water-percent
-                    state: "{{ states('sensor.weatherflow_humidity') }}"
+                    state: "{{ states('sensor.st_00174194_humidity') }}"
                     styles:
                       state:
                         color: '#DDDDDD'
@@ -38,12 +38,12 @@ views:
                         color: '#20BD8C'
               - type: custom:compass-card
                 indicator_sensors:
-                  - sensor: sensor.weatherflow_wind_direction_average
+                  - sensor: sensor.st_00174194_wind_direction_average
                     color: '#FF6853'
                     indicator:
                       type: arrow-inward
                 value_sensors:
-                  - sensor: sensor.weatherflow_wind_speed_average
+                  - sensor: sensor.st_00174194_wind_speed_average
                     unit: mph
                 compass:
                   circle:
@@ -59,17 +59,17 @@ views:
             entities:
               - type: custom:paper-buttons-row
                 buttons:
-                  - entity: sensor.weatherflow_air_pressure
+                  - entity: sensor.st_00174194_air_pressure
                     name: Pressure
                     icon: >
-                      {% set trend = states('sensor.weatherflow_air_pressure')
+                      {% set trend = states('sensor.st_00174194_air_pressure')
                       %} {% if trend > 1013.25 %}mdi:arrow-top-right {% elif
                       trend < 1013.25 %}mdi:arrow-bottom-right {% else
                       %}mdi:arrow-right{% endif %}
                     layout: icon|state
                     state: >
                       {{
-                      states("sensor.weatherflow_air_pressure")|float|round(2)
+                      states("sensor.st_00174194_air_pressure")|float|round(2)
                       }} hPa
                     styles:
                       state:
@@ -89,7 +89,7 @@ views:
               chart:
                 height: 200
             series:
-              - entity: sensor.weatherflow_air_pressure
+              - entity: sensor.st_00174194_air_pressure
                 name: Actual Pressure
                 color: '#3D82FF'
                 type: area
@@ -107,27 +107,27 @@ views:
             entities:
               - type: custom:paper-buttons-row
                 buttons:
-                  - entity: sensor.weatherflow_wind_gust
+                  - entity: sensor.st_00174194_wind_gust
                     name: Gust
                     icon: mdi:weather-windy
                     layout: icon|state
-                    state: '{{ states("sensor.weatherflow_wind_gust") }} mph'
+                    state: '{{ states("sensor.st_00174194_wind_gust") }} mph'
                     styles:
                       icon:
                         color: '#8F3BB8'
-                  - entity: sensor.weatherflow_wind_lull
+                  - entity: sensor.st_00174194_wind_lull
                     name: Lull
                     icon: mdi:weather-windy
                     layout: icon|state
-                    state: '{{ states("sensor.weatherflow_wind_lull") }} mph'
+                    state: '{{ states("sensor.st_00174194_wind_lull") }} mph'
                     styles:
                       icon:
                         color: '#DBAF07'
           - type: custom:windrose-card
             hours_to_show: 4
-            wind_direction_entity: sensor.weatherflow_wind_direction
+            wind_direction_entity: sensor.st_00174194_wind_direction
             windspeed_entities:
-              - entity: sensor.weatherflow_wind_speed
+              - entity: sensor.st_00174194_wind_speed
             speed_ranges:
               - from_value: 0
                 color: rgba(61, 130, 255, .6)
@@ -142,34 +142,35 @@ views:
             entities:
               - type: custom:paper-buttons-row
                 buttons:
-                  - entity: sensor.weatherflow_precipitation_intensity
+                  - entity: sensor.st_00174194_precipitation_intensity
                     name: Intensity
                     icon: >
                       {% set intensity =
-                      states('sensor.weatherflow_precipitation_intensity') %} {%
+                      states('sensor.st_00174194_precipitation_intensity') %} {%
                       if intensity == 'extreme' %}mdi:weather-pouring {% elif
                       intensity in ['heavy','very_heavy'] %}mdi:weather-rainy {%
                       elif intensity in ['moderate','light'] %}mdi:weather-partly-rainy
                       {% else %}mdi:weather-sunny {% endif %}
                     layout: icon|state
-                    state: '{{ states("sensor.weatherflow_precipitation_intensity") }}'
+                    state: '{{ states("sensor.st_00174194_precipitation_intensity") }}'
                     styles:
                       icon:
                         color: '#3D82FF'
-                  - entity: sensor.weatherflow_precipitation
+                  - entity: sensor.st_00174194_precipitation
                     name: Precipitation
                     icon: mdi:water
                     layout: icon|state
-                    state: '{{ states("sensor.weatherflow_precipitation") }} in'
+                    state: '{{ states("sensor.st_00174194_precipitation") }} in'
                     styles:
                       icon:
                         color: '#20BD8C'
           - type: custom:mini-graph-card
             entities:
-              - entity: sensor.weatherflow_precipitation
+              - entity: sensor.st_00174194_precipitation
                 color: '#3D82FF'
-              - entity: sensor.weatherflow_precipitation_accumulated
+              - entity: sensor.st_00174194_precipitation
                 color: '#8F3BB8'
+                name: "Accumulated"
             hours_to_show: 24
             points_per_hour: 4
             line_width: 2
@@ -186,27 +187,27 @@ views:
             entities:
               - type: custom:paper-buttons-row
                 buttons:
-                  - entity: sensor.weatherflow_lightning_count
+                  - entity: sensor.st_00174194_lightning_count
                     name: Lightning
                     icon: mdi:weather-lightning
                     layout: icon|state
-                    state: '{{ states("sensor.weatherflow_lightning_count") }} strikes'
+                    state: '{{ states("sensor.st_00174194_lightning_count") }} strikes'
                     styles:
                       icon:
                         color: '#DBAF07'
-                  - entity: sensor.weatherflow_lightning_average_distance
+                  - entity: sensor.st_00174194_lightning_average_distance
                     name: Distance
                     icon: mdi:compass-outline
                     layout: icon|state
-                    state: '{{ states("sensor.weatherflow_lightning_average_distance") }} mi'
+                    state: '{{ states("sensor.st_00174194_lightning_average_distance") }} mi'
                     styles:
                       icon:
                         color: '#FF6853'
           - type: custom:mini-graph-card
             entities:
-              - entity: sensor.weatherflow_lightning_count
+              - entity: sensor.st_00174194_lightning_count
                 color: '#DBAF07'
-              - entity: sensor.weatherflow_lightning_count_last_3_hr
+              - entity: sensor.st_00174194_lightning_count
                 color: '#FF6853'
                 name: "3hr Count"
             hours_to_show: 12
