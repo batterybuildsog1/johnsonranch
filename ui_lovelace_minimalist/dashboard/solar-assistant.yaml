@@ -118,3 +118,122 @@ views:
             height: 350
             update_interval: 50
             logarithmic: false
+title: "Solar Assistant Dashboard"
+theme: "minimalist-desktop"
+background: "var(--background-image)"
+
+views:
+  - title: "Home"
+    path: "home"
+    icon: "mdi:home"
+    cards:
+      - square: false
+        columns: 1
+        type: grid
+        cards:
+          - type: "custom:mini-graph-card"
+            entities:
+              - entity: sensor.luxpower_lxp_battery_state_of_charge
+            point_per_hour: 20
+            font_size: 150
+            color_thresholds:
+              - value: 25
+                color: '#fc0303'
+              - value: 40
+                color: '#fce803'
+              - value: 100
+                color: '#0bfc03'
+            animate: true
+            height: 150
+            name: "Battery Level"
+            hour24: true
+            logarithmic: true
+          - square: false
+            columns: 3
+            type: grid
+            cards:
+              - type: tile
+                entity: sensor.luxpower_lxp_grid_power
+                icon: mdi:power-socket
+                color: blue
+                vertical: true
+                show_entity_picture: false
+                name: "Grid Usage"
+              - type: tile
+                entity: sensor.luxpower_lxp_pv_energy
+                name: "Daily Solar Yield"
+                vertical: true
+                show_entity_picture: true
+                icon: mdi:leaf
+                color: lime
+              - type: tile
+                name: "Battery Power"
+                entity: sensor.luxpower_lxp_battery_power
+                color: light-green
+                show_entity_picture: true
+                vertical: true
+                icon: mdi:flash
+          - show_current: true
+            show_forecast: true
+            type: weather-forecast
+            entity: weather.johnson_ranch
+          - type: horizontal-stack
+            cards:
+              - type: "custom:mini-graph-card"
+                entities:
+                  - entity: sensor.luxpower_lxp_pv_power
+                line_width: 2
+                points_per_hour: 60
+                color_thresholds:
+                  - value: 1000
+                    color: "#2ECC71"
+                  - value: 4000
+                    color: "#27AE60"
+                  - value: 6000
+                    color: "#145A32"
+                font_size: 100
+                name: "Solar Production"
+                icon: mdi:solar-power
+                smoothing: true
+                hours_to_show: 12
+          - type: horizontal-stack
+            cards:
+              - type: gauge
+                entity: sensor.luxpower_lxp_battery_power
+                max: 7500
+                name: "Battery Power"
+              - type: gauge
+                entity: sensor.luxpower_lxp_load_power
+                max: 9000
+                name: "Load Power"
+          - square: false
+            columns: 3
+            type: grid
+            cards:
+              - type: gauge
+                entity: sensor.luxpower_lxp_grid_power
+                name: "Grid"
+                max: 12000
+              - type: gauge
+                entity: sensor.luxpower_lxp_pv_power
+                name: "Solar"
+                max: 9000
+                min: 0
+          - type: "custom:mini-graph-card"
+            entities:
+              - entity: sensor.luxpower_lxp_load_power
+                name: "Load"
+              - entity: sensor.luxpower_lxp_grid_power
+                name: "Grid"
+              - entity: sensor.luxpower_lxp_pv_power
+                name: "Solar"
+              - entity: sensor.luxpower_lxp_battery_power
+                name: "Battery"
+            name: "Power Flow"
+            show:
+              state: false
+            hours_to_show: 24
+            point_per_hour: 50
+            height: 350
+            update_interval: 50
+            logarithmic: false

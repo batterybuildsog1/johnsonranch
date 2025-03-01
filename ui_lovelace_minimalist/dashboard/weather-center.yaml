@@ -1,0 +1,181 @@
+---
+title: Weather Center
+path: weather
+icon: mdi:weather-cloudy
+views:
+  - title: Weather Overview
+    path: overview
+    cards:
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:paper-buttons-row
+                buttons:
+                  - entity: sensor.weatherflow_temperature
+                    name: Temperature
+                    layout: icon|state
+                    icon: mdi:thermometer
+                    state: "{{ states('sensor.weatherflow_temperature') }}"
+                    styles:
+                      state:
+                        color: '#DDDDDD'
+                        font-size: 2.5em
+                      icon:
+                        color: '#3D82FF'
+                  - entity: sensor.weatherflow_humidity
+                    name: Humidity
+                    layout: icon|state
+                    icon: mdi:water-percent
+                    state: "{{ states('sensor.weatherflow_humidity') }}"
+                    styles:
+                      state:
+                        color: '#DDDDDD'
+                        font-size: 2.5em
+                      icon:
+                        color: '#20BD8C'
+              - type: custom:compass-card
+                indicator_sensors:
+                  - sensor: sensor.weatherflow_wind_direction_average
+                    color: '#FF6853'
+                    indicator:
+                      type: arrow-inward
+                value_sensors:
+                  - sensor: sensor.weatherflow_wind_speed_average
+                    unit: mph
+                compass:
+                  circle:
+                    color: '#8F3BB8'
+                  north:
+                    show: true
+                  labels:
+                    color: '#FFFFFF'
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: entities
+            title: Atmospheric Analysis
+            entities:
+              - type: custom:paper-buttons-row
+                buttons:
+                  - entity: sensor.weatherflow_air_pressure
+                    name: Pressure
+                    icon: >
+                      {% set trend = states('sensor.weatherflow_air_pressure')
+                      %} {% if trend > 1013.25 %}mdi:arrow-top-right {% elif
+                      trend < 1013.25 %}mdi:arrow-bottom-right {% else
+                      %}mdi:arrow-right{% endif %}
+                    layout: icon|state
+                    state: >
+                      {{
+                      states("sensor.weatherflow_air_pressure")|float|round(2)
+                      }} hPa
+                    styles:
+                      state:
+                        color: '#B6B8BA'
+                      icon:
+                        color: '#3D82FF'
+                  - entity: sensor.barometric_pressure_24h_spread
+                    name: 24h Spread
+                    layout: name|state
+                    state: '{{ states("sensor.barometric_pressure_24h_spread") }} inHg'
+                    styles:
+                      state:
+                        color: '#B6B8BA'
+          - type: custom:apexcharts-card
+            graph_span: 24h
+            apex_config:
+              chart:
+                height: 200
+            series:
+              - entity: sensor.weatherflow_air_pressure
+                name: Actual Pressure
+                color: '#3D82FF'
+                type: area
+                stroke_width: 2
+                opacity: 0.2
+              - entity: sensor.barometric_pressure_24h_spread
+                name: Pressure Spread
+                color: '#FF6853'
+                type: line
+                stroke_width: 3
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: entities
+            title: Wind Analysis
+            entities:
+              - type: custom:paper-buttons-row
+                buttons:
+                  - entity: sensor.weatherflow_wind_gust
+                    name: Gust
+                    icon: mdi:weather-windy
+                    layout: icon|state
+                    state: '{{ states("sensor.weatherflow_wind_gust") }} mph'
+                    styles:
+                      icon:
+                        color: '#8F3BB8'
+                  - entity: sensor.weatherflow_wind_lull
+                    name: Lull
+                    icon: mdi:weather-windy
+                    layout: icon|state
+                    state: '{{ states("sensor.weatherflow_wind_lull") }} mph'
+                    styles:
+                      icon:
+                        color: '#DBAF07'
+          - type: custom:windrose-card
+            hours_to_show: 4
+            wind_direction_entity: sensor.weatherflow_wind_direction
+            windspeed_entities:
+              - entity: sensor.weatherflow_wind_speed
+            speed_ranges:
+              - from_value: 0
+                color: rgba(61, 130, 255, .6)
+              - from_value: 15
+                color: rgba(143, 59, 184, .6)
+              - from_value: 25
+                color: rgba(255, 104, 83, .6)
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: entities
+            title: Precipitation Analysis
+            entities:
+              - type: custom:paper-buttons-row
+                buttons:
+                  - entity: sensor.weatherflow_precipitation_intensity
+                    name: Intensity
+                    icon: >
+                      {% set intensity =
+                      states('sensor.weatherflow_precipitation_intensity') %} {%
+                      if intensity == 'extreme' %}mdi:weather-pouring {% elif
+                      intensity in ['heavy','very_heavy'] %}mdi:weather-rainy {%
+                      elif intensity in ['moderate','light'] %}mdi:weather-partly-rainy
+                      {% else %}mdi:weather-sunny {% endif %}
+                    layout: icon|state
+                    state: '{{ states("sensor.weatherflow_precipitation_intensity") }}'
+                    styles:
+                      icon:
+                        color: '#3D82FF'
+                  - entity: sensor.weatherflow_precipitation_rate
+                    name: Rate
+                    icon: mdi:water
+                    layout: icon|state
+                    state: '{{ states("sensor.weatherflow_precipitation_rate") }} in/hr'
+                    styles:
+                      icon:
+                        color: '#20BD8C'
+          - type: custom:mini-graph-card
+            entities:
+              - entity: sensor.weatherflow_precipitation_rate
+                color: '#3D82FF'
+              - entity: sensor.weatherflow_precipitation_accumulated
+                color: '#8F3BB8'
+            hours_to_show: 24
+            points_per_hour: 4
+            line_width: 2
+            hour24: true
+            animate: true
+            show:
+              labels: true
+              points: hover
+              legend: true
