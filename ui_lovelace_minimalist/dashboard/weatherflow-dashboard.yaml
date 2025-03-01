@@ -66,11 +66,11 @@ views:
             title: Wind Rose (4hr)
             show_card_title: true
             wind_direction_entity:
-              entity: sensor.wind_direction_1h_avg
+              entity: sensor.wind_direction_4h_avg
               use_statistics: false
               direction_compensation: 0
             windspeed_entities:
-              - entity: sensor.wind_speed_1h_avg
+              - entity: sensor.wind_speed_4h_avg
                 name: Wind Speed
             data_period:
               hours_to_show: 4
@@ -182,10 +182,13 @@ views:
           - entity: binary_sensor.flood_warning
             name: Flood Warning
             icon: mdi:home-flood
+          - entity: sensor.pressure_trend_icon
+            name: Pressure Trend
+            icon: mdi:trending-neutral
 
       # Weather Forecast
       - type: weather-forecast
-        entity: weather.weatherflow
+        entity: weather.home_weather
         show_forecast: true
         
       # Weather Radar Map
