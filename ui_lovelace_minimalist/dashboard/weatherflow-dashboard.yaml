@@ -189,7 +189,7 @@ views:
 
       # Weather Forecast
       - type: weather-forecast
-        entity: weather.home_weather
+        entity: weather.johnson_ranch
         show_forecast: true
         
       # Weather Radar Map
