@@ -23,7 +23,7 @@ views:
                     styles:
                       state:
                         color: '#DDDDDD'
-                        font-size: 2em
+                        font-size: 1.5em
                       icon:
                         color: '#3D82FF'
                   - entity: sensor.st_00174194_humidity
@@ -34,7 +34,7 @@ views:
                     styles:
                       state:
                         color: '#DDDDDD'
-                        font-size: 2em
+                        font-size: 1.5em
                       icon:
                         color: '#20BD8C'
               - type: custom:compass-card
@@ -147,7 +147,7 @@ views:
                     name: Gust
                     icon: mdi:weather-windy
                     layout: icon|state
-                    state: '{{ states("sensor.st_00174194_wind_gust") }} mph'
+                    state: '{{ states("sensor.st_00174194_wind_gust")|float|round(1) }} mph'
                     styles:
                       icon:
                         color: '#8F3BB8'
@@ -155,7 +155,7 @@ views:
                     name: Lull
                     icon: mdi:weather-windy
                     layout: icon|state
-                    state: '{{ states("sensor.st_00174194_wind_lull") }} mph'
+                    state: '{{ states("sensor.st_00174194_wind_lull")|float|round(1) }} mph'
                     styles:
                       icon:
                         color: '#DBAF07'

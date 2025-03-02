@@ -17,7 +17,7 @@ views:
             hours_to_show: 24
             points_per_hour: 4
             line_width: 2
-            font_size: 75
+            font_size: 60
             animate: true
             hour24: true
             show:
@@ -34,7 +34,7 @@ views:
             hours_to_show: 24
             points_per_hour: 4
             line_width: 2
-            font_size: 75
+            font_size: 60
             animate: true
             hour24: true
             show:
@@ -56,7 +56,7 @@ views:
             hours_to_show: 24
             points_per_hour: 4
             line_width: 2
-            font_size: 75
+            font_size: 60
             animate: true
             show:
               fill: fade
@@ -73,30 +73,31 @@ views:
             windspeed_entities:
               - entity: sensor.st_00174194_wind_speed_average
                 name: Wind Speed
-            speed_ranges:
-              - from_value: 0
-                to_value: 3
-                color: rgba(32, 189, 140, 0.6)
-                label: Calm
-              - from_value: 3
-                to_value: 8
-                color: rgba(61, 130, 255, 0.6)
-                label: Light
-              - from_value: 8
-                to_value: 13
-                color: rgba(143, 59, 184, 0.6)
-                label: Moderate
-              - from_value: 13
-                to_value: 19
-                color: rgba(219, 175, 7, 0.6)
-                label: Fresh
-              - from_value: 19
-                to_value: 25
-                color: rgba(255, 165, 0, 0.6)
-                label: Strong
-              - from_value: 25
-                color: rgba(255, 104, 83, 0.6)
-                label: Gale+
+                speed_range_beaufort: false
+                speed_ranges:
+                  - from_value: 0
+                    to_value: 3
+                    color: rgba(32, 189, 140, 0.6)
+                    label: Calm
+                  - from_value: 3
+                    to_value: 8
+                    color: rgba(61, 130, 255, 0.6)
+                    label: Light
+                  - from_value: 8
+                    to_value: 13
+                    color: rgba(143, 59, 184, 0.6)
+                    label: Moderate
+                  - from_value: 13
+                    to_value: 19
+                    color: rgba(219, 175, 7, 0.6)
+                    label: Fresh
+                  - from_value: 19
+                    to_value: 25
+                    color: rgba(255, 165, 0, 0.6)
+                    label: Strong
+                  - from_value: 25
+                    color: rgba(255, 104, 83, 0.6)
+                    label: Gale+
             data_period:
               hours_to_show: 4
             direction_labels:
@@ -117,7 +118,7 @@ views:
             hours_to_show: 24
             points_per_hour: 4
             line_width: 2
-            font_size: 75
+            font_size: 60
             animate: true
             show:
               fill: fade
@@ -131,7 +132,7 @@ views:
             hours_to_show: 24
             points_per_hour: 4
             line_width: 2
-            font_size: 75
+            font_size: 60
             animate: true
             show:
               fill: fade
@@ -150,7 +151,7 @@ views:
             hours_to_show: 24
             points_per_hour: 4
             line_width: 2
-            font_size: 75
+            font_size: 60
             animate: true
             show:
               fill: fade
@@ -166,7 +167,7 @@ views:
             hours_to_show: 24
             points_per_hour: 4
             line_width: 2
-            font_size: 75
+            font_size: 60
             animate: true
             show:
               fill: fade
