@@ -118,6 +118,7 @@ views:
                 type: line
                 stroke_width: 3
                 curve: smooth
+                # Removed unsupported properties
       - type: custom:vertical-stack-in-card
         cards:
           - type: entities
