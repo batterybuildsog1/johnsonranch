@@ -102,7 +102,6 @@ views:
             header:
               show: true
               title: Pressure Trend
-            show_states: true
             apex_config:
               chart:
                 height: 200
