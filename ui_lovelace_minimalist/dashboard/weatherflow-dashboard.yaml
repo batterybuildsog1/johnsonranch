@@ -189,8 +189,10 @@ views:
 
       # Weather Forecast
       - type: weather-forecast
-        entity: weather.johnson_ranch
+        entity: weather.home_weather
+        name: Weather Forecast
         show_forecast: true
+        forecast_type: daily
         
       # Weather Radar Map
       - type: custom:weather-radar-card

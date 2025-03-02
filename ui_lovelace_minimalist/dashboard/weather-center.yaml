@@ -23,7 +23,7 @@ views:
                     styles:
                       state:
                         color: '#DDDDDD'
-                        font-size: 2.5em
+                        font-size: 2em
                       icon:
                         color: '#3D82FF'
                   - entity: sensor.st_00174194_humidity
@@ -34,7 +34,7 @@ views:
                     styles:
                       state:
                         color: '#DDDDDD'
-                        font-size: 2.5em
+                        font-size: 2em
                       icon:
                         color: '#20BD8C'
               - type: custom:compass-card
@@ -118,9 +118,6 @@ views:
                 type: line
                 stroke_width: 3
                 curve: smooth
-                fill: false
-                show:
-                  in_header: true
       - type: custom:vertical-stack-in-card
         cards:
           - type: entities
@@ -247,7 +244,7 @@ views:
       - type: custom:vertical-stack-in-card
         cards:
           - type: weather-forecast
-            entity: weather.johnson_ranch
+            entity: weather.home_weather
             name: Weather Forecast
             show_forecast: true
             forecast_type: daily
